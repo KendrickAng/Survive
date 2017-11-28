@@ -30,6 +30,7 @@ www-test/
 *.iml
 /android/out/
 com_crashlytics_export_strings.xml
+/android/local.properties
 
 ## Eclipse
 
@@ -123,5 +124,3 @@ Thumbs.db
 !/ios-moe/xcode/*.xcodeproj/xcshareddata
 !/ios-moe/xcode/*.xcodeproj/project.pbxproj
 /ios-moe/xcode/native/
-
-/android/local.properties
