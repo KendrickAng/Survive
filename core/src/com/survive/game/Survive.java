@@ -66,7 +66,7 @@ public class Survive extends ApplicationAdapter {
 
 		cursor_position = new Vector3();
 
-		// Pixmap to draw sprites on the fly
+		// Load pixmap to draw player and cursor
 		pixmap = new Pixmap(cursor_radius*2 + 1, cursor_radius*2 + 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.drawCircle(cursor_radius, cursor_radius, cursor_radius);
@@ -123,7 +123,7 @@ public class Survive extends ApplicationAdapter {
 		// Even games have speed limits buddy
 		if (player_speed > player_max_speed) player_speed = player_max_speed;
 
-		// Wtf is this sorcery
+		// Trigonometry to find player vector speeds
 		player_x += Math.sin(Math.toRadians(player_rotation + 90))*player_speed;
 		player_y += Math.cos(Math.toRadians(player_rotation - 90))*player_speed;
 
@@ -140,14 +140,16 @@ public class Survive extends ApplicationAdapter {
 		if (player_y > screen_height - player_height/2)
 			player_y = screen_height - player_height/2;
 
-		// Spawn the player's sprite in center of screen
+		// Set starting position of player
 		player.setPosition(player_x - player_width/2, player_y - player_height/2);
 		player.setRotation(player_rotation + 90);
 
+		// Draw cursor onto screen
 		sprite_batch.begin();
 		sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
 		player.draw(sprite_batch);
 
+		// Add FPS counter to screen
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 50, 50);
 		sprite_batch.end();
 	}
