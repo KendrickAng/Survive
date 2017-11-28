@@ -52,6 +52,8 @@ public class Survive extends ApplicationAdapter {
 
 		screen_width = Gdx.graphics.getWidth();
 		screen_height = Gdx.graphics.getHeight();
+
+		// Get DIP scaling factor
 		Gdx.app.log("Density", String.valueOf(Gdx.graphics.getDensity()));
 
 		camera = new OrthographicCamera();
@@ -64,6 +66,7 @@ public class Survive extends ApplicationAdapter {
 
 		cursor_position = new Vector3();
 
+		// Pixmap to draw sprites on the fly
 		pixmap = new Pixmap(cursor_radius*2 + 1, cursor_radius*2 + 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.drawCircle(cursor_radius, cursor_radius, cursor_radius);
@@ -74,22 +77,28 @@ public class Survive extends ApplicationAdapter {
 		pixmap.fillTriangle(0, 0, (player_width - 1)/2, player_height - 1, player_width - 1, 0);
 		player = new Sprite(new Texture(pixmap), player_width, player_height);
 
+		// Delete pixmap once done
 		pixmap.dispose();
 
+		// Paint background opaque black
 		Gdx.gl.glClearColor(0, 0, 0, 1);
+
+		// Allow manual setting of cursor position
 		Gdx.input.setCursorCatched(true);
 	}
 
 	@Override
 	public void render () {
 
-		game_time = Gdx.graphics.getRawDeltaTime();
+		game_time = Gdx.graphics.getDeltaTime();
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		// Set Vector3 for cursor, change from screen coords to world coords
 		cursor_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(cursor_position);
 
+		// For Android phones (tilting sensor)
 		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
 
 			offset_x += Math.toDegrees(Gdx.input.getGyroscopeX())/10;
@@ -105,43 +114,33 @@ public class Survive extends ApplicationAdapter {
 
 		player_rotation = (float) Math.toDegrees(Math.atan2(offset_y, offset_x));
 
-		if (offset_distance > player_height/2) {
-
+		if (offset_distance > player_height/2)
 			player_speed = offset_distance*player_acceleration*game_time;
 
-		} else {
-
+		else
 			player_speed = 0;
-		}
 
-		if (player_speed > player_max_speed) {
+		// Even games have speed limits buddy
+		if (player_speed > player_max_speed) player_speed = player_max_speed;
 
-			player_speed = player_max_speed;
-		}
-
+		// Wtf is this sorcery
 		player_x += Math.sin(Math.toRadians(player_rotation + 90))*player_speed;
 		player_y += Math.cos(Math.toRadians(player_rotation - 90))*player_speed;
 
-		if (player_x < player_height/2) {
-
+		// Player can't escape the screen
+		if (player_x < player_height/2)
 			player_x = player_height/2;
-		}
 
-		if (player_x > screen_width - player_height/2) {
-
+		if (player_x > screen_width - player_height/2)
 			player_x = screen_width - player_height/2;
-		}
 
-		if (player_y < player_height/2) {
-
+		if (player_y < player_height/2)
 			player_y = player_height/2;
-		}
 
-		if (player_y > screen_height - player_height/2) {
-
+		if (player_y > screen_height - player_height/2)
 			player_y = screen_height - player_height/2;
-		}
 
+		// Spawn the player's sprite in center of screen
 		player.setPosition(player_x - player_width/2, player_y - player_height/2);
 		player.setRotation(player_rotation + 90);
 
