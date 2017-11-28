@@ -107,12 +107,12 @@ public class Survive extends ApplicationAdapter {
 		} else {
 
 			offset_x = cursor_position.x - player_x;
-			offset_y = cursor_position.y - player_y;
+			offset_y = player_y - cursor_position.y;
 		}
 
 		offset_distance = (float) Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
 
-		player_rotation = (float) Math.toDegrees(Math.atan2(offset_y, offset_x));
+		player_rotation = (float) Math.toDegrees(Math.atan2(offset_x, offset_y));
 
 		if (offset_distance > player_height/2)
 			player_speed = offset_distance*player_acceleration*game_time;
@@ -124,8 +124,8 @@ public class Survive extends ApplicationAdapter {
 		if (player_speed > player_max_speed) player_speed = player_max_speed;
 
 		// Trigonometry to find player vector speeds
-		player_x += Math.sin(Math.toRadians(player_rotation + 90))*player_speed;
-		player_y += Math.cos(Math.toRadians(player_rotation - 90))*player_speed;
+		player_x += Math.sin(Math.toRadians(player_rotation))*player_speed;
+		player_y -= Math.cos(Math.toRadians(player_rotation))*player_speed;
 
 		// Player can't escape the screen
 		if (player_x < player_height/2)
@@ -142,7 +142,7 @@ public class Survive extends ApplicationAdapter {
 
 		// Set starting position of player
 		player.setPosition(player_x - player_width/2, player_y - player_height/2);
-		player.setRotation(player_rotation + 90);
+		player.setRotation(player_rotation);
 
 		// Draw cursor onto screen
 		sprite_batch.begin();
