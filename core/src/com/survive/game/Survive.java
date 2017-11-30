@@ -50,23 +50,32 @@ public class Survive extends ApplicationAdapter {
 	@Override
 	public void create () {
 
+		// Paint background opaque black
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+
+		// Bind cursor within screen boundaries
+		Gdx.input.setCursorCatched(true);
+
+		// Get local screen dimensions (varies on machine)
 		screen_width = Gdx.graphics.getWidth();
 		screen_height = Gdx.graphics.getHeight();
 
 		// Get DIP scaling factor
 		Gdx.app.log("Density", String.valueOf(Gdx.graphics.getDensity()));
 
+		// Initialise ortho camera (stage)
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, screen_width, screen_height);
 
+		// Initialise SpriteBatch, set projection camera (actors)
 		sprite_batch = new SpriteBatch();
 		sprite_batch.setProjectionMatrix(camera.combined);
 
+		// Initialise remaining declared objects
 		bitmap_font = new BitmapFont();
-
 		cursor_position = new Vector3();
 
-		// Load pixmap to draw player and cursor
+		// Load pixmap to draw player and cursor, send to GPU
 		pixmap = new Pixmap(cursor_radius*2 + 1, cursor_radius*2 + 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.drawCircle(cursor_radius, cursor_radius, cursor_radius);
@@ -77,57 +86,61 @@ public class Survive extends ApplicationAdapter {
 		pixmap.fillTriangle(0, 0, (player_width - 1)/2, player_height - 1, player_width - 1, 0);
 		player = new Sprite(new Texture(pixmap), player_width, player_height);
 
-		// Delete pixmap once done
 		pixmap.dispose();
-
-		// Paint background opaque black
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-
-		// Allow manual setting of cursor position
-		Gdx.input.setCursorCatched(true);
 	}
 
 	@Override
 	public void render () {
 
-		game_time = Gdx.graphics.getDeltaTime();
-
+		// Clear the screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Set Vector3 for cursor, change from screen coords to world coords
+		// Find time elapsed between 2 simultaneous frames
+		game_time = Gdx.graphics.getDeltaTime();
+
+		// Keep tracking cursor position, transform screen to world coords
 		cursor_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(cursor_position);
 
+		// Set player sprite positions
+		player.setPosition(player_x - player_width/2, player_y - player_height/2);
+		player.setRotation(player_rotation);
+
+		// Re-draw player, cursor and FPS counter
+		sprite_batch.begin();
+		sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
+		player.draw(sprite_batch);
+		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 50, 50);
+		sprite_batch.end();
+
 		// For Android phones (tilting sensor)
 		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
-
 			offset_x += Math.toDegrees(Gdx.input.getGyroscopeX())/10;
 			offset_y += Math.toDegrees(Gdx.input.getGyroscopeY())/10;
 
 		} else {
-
+			// Find cursor-player distance and angle from x-axis
 			offset_x = cursor_position.x - player_x;
 			offset_y = player_y - cursor_position.y;
 		}
 
 		offset_distance = (float) Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
-
 		player_rotation = (float) Math.toDegrees(Math.atan2(offset_x, offset_y));
 
+		// Determine current speed, varies on cursor-player distance
 		if (offset_distance > player_height/2)
 			player_speed = offset_distance*player_acceleration*game_time;
-
 		else
 			player_speed = 0;
 
-		// Even games have speed limits buddy
-		if (player_speed > player_max_speed) player_speed = player_max_speed;
+		if (player_speed > player_max_speed)
+			player_speed = player_max_speed;
 
-		// Trigonometry to find player vector speeds
+		// Add displacement moved in one frame (x and y axis)
 		player_x += Math.sin(Math.toRadians(player_rotation))*player_speed;
 		player_y -= Math.cos(Math.toRadians(player_rotation))*player_speed;
 
-		// Player can't escape the screen
+		// Implement screen boundaries
 		if (player_x < player_height/2)
 			player_x = player_height/2;
 
@@ -139,19 +152,6 @@ public class Survive extends ApplicationAdapter {
 
 		if (player_y > screen_height - player_height/2)
 			player_y = screen_height - player_height/2;
-
-		// Set starting position of player
-		player.setPosition(player_x - player_width/2, player_y - player_height/2);
-		player.setRotation(player_rotation);
-
-		// Draw cursor onto screen
-		sprite_batch.begin();
-		sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
-		player.draw(sprite_batch);
-
-		// Add FPS counter to screen
-		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 50, 50);
-		sprite_batch.end();
 	}
 
 	@Override
