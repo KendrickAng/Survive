@@ -1,6 +1,7 @@
 package com.survive.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
-public class Survive extends ApplicationAdapter {
+public class Survive extends Game {
 
 	public static int screen_width = 1920;
 	public static int screen_height = 1080;
@@ -53,8 +54,8 @@ public class Survive extends ApplicationAdapter {
 		// Paint background opaque black
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 
-		// Bind cursor within screen boundaries
-		Gdx.input.setCursorCatched(true);
+		// Bind cursor within screen boundaries (THIS HIDES THE CURSOR)
+		//Gdx.input.setCursorCatched(true);
 
 		// Get local screen dimensions (varies on machine)
 		screen_width = Gdx.graphics.getWidth();
@@ -87,6 +88,9 @@ public class Survive extends ApplicationAdapter {
 		player = new Sprite(new Texture(pixmap), player_width, player_height);
 
 		pixmap.dispose();
+
+		// Redirect to main menu
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	@Override
@@ -152,6 +156,9 @@ public class Survive extends ApplicationAdapter {
 
 		if (player_y > screen_height - player_height/2)
 			player_y = screen_height - player_height/2;
+
+		// Call Game.render() to swap screens. Comment this out to see the real game (for now)
+		super.render();
 	}
 
 	@Override
