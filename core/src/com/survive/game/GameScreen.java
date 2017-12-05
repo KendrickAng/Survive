@@ -52,6 +52,8 @@ public class GameScreen implements Screen {
 		player_height = game.player_height;
 		player_acceleration = game.player_acceleration;
 		player_max_speed = game.player_max_speed;
+
+		bitmap_font.getData().setScale(1);
 	}
 
 	@Override
@@ -61,8 +63,6 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		float player_speed;
-		// Find time elapsed between 2 simultaneous frames
-		float game_time = Gdx.graphics.getDeltaTime();
 
 		// Keep tracking cursor position, transform screen to world coordinates
 		cursor_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -71,7 +71,6 @@ public class GameScreen implements Screen {
 		// Set player sprite positions
 		player.setPosition(player_x - player_width/2, player_y - player_height/2);
 		player.setRotation(player_rotation);
-
 
 		// For Android phones (tilting sensor)
 		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
@@ -91,7 +90,7 @@ public class GameScreen implements Screen {
 
 		// Determine current speed, varies on cursor-player distance
 		if (offset_distance > player_height/2)
-			player_speed = offset_distance *player_acceleration* game_time;
+			player_speed = offset_distance *player_acceleration* delta;
 
 		else
 			player_speed = 0;

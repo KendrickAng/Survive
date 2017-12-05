@@ -31,9 +31,6 @@ public class Survive extends Game {
 	@Override
 	public void create () {
 
-		// Paint background opaque black
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-
 		// Bind cursor within screen boundaries (THIS HIDES THE CURSOR)
 		Gdx.input.setCursorCatched(true);
 
@@ -41,7 +38,7 @@ public class Survive extends Game {
 		screen_width = Gdx.graphics.getWidth();
 		screen_height = Gdx.graphics.getHeight();
 
-		// Get DIP scaling factor
+		// Log DIP scaling factor
 		Gdx.app.log("Density", String.valueOf(Gdx.graphics.getDensity()));
 
 		// Initialise ortho camera (stage)

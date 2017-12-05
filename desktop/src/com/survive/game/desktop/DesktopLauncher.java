@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = "LibGDX";
+		config.title = "Survive";
 		config.useGL30 = false;
 		config.width = 1920;
 		config.height = 1080;

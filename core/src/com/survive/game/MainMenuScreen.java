@@ -105,5 +105,9 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
 
         bitmap_font.dispose();
+        playButtonActive.dispose();
+        playButtonInactive.dispose();
+        exitButtonActive.dispose();
+        exitButtonInactive.dispose();
     }
 }
