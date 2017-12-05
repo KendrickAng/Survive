@@ -1,6 +1,5 @@
 package com.survive.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,15 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class MainMenuScreen2 extends Game implements Screen {
+public class MainMenuScreen2 implements Screen {
 
     private Stage stage;
 
-    Skin skin;
-    TextButton button;
+    private Skin skin;
+    private TextButton button;
 
-    @Override
-    public void create() {
+    MainMenuScreen2(Survive game) {
 
         // Define constants
         final int COLUMN_WIDTH = Gdx.graphics.getWidth() / 12;
@@ -58,15 +56,12 @@ public class MainMenuScreen2 extends Game implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act(Gdx.graphics.getDeltaTime());
+        stage.act(delta);
         stage.draw();
-
     }
 
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
+    public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
 
     @Override
     public void pause() { }

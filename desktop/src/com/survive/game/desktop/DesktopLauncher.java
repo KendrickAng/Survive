@@ -19,6 +19,6 @@ public class DesktopLauncher {
 		config.foregroundFPS = 0;
 		config.backgroundFPS = 0;
 
-		new LwjglApplication(new MainMenuScreen2(), config);
+		new LwjglApplication(new Survive(), config);
 	}
 }

@@ -73,10 +73,13 @@ public class Survive extends Game {
 		Gdx.gl.glClearColor(1, 1, 1, 0);
 
 		// Set screen to main screen
-		this.setScreen(new MainMenuScreen(this));
+		// this.setScreen(new MainMenuScreen(this));
 
 		// Set screen to game screen
-		this.setScreen(new GameScreen(this));
+		// this.setScreen(new GameScreen(this));
+
+		// Run MainMenuScreen2 from main Survive Game instead?
+		this.setScreen(new MainMenuScreen2(this));
 	}
 
 	@Override
