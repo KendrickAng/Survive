@@ -11,14 +11,13 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "LibGDX";
 		config.useGL30 = false;
-		config.width = Survive.screen_width;
-		config.height = Survive.screen_height;
+		config.width = 1920;
+		config.height = 1080;
 		config.fullscreen = true;
 		config.vSyncEnabled = false;
 		config.foregroundFPS = 0;
 		config.backgroundFPS = 0;
 
 		new LwjglApplication(new Survive(), config);
-
 	}
 }
