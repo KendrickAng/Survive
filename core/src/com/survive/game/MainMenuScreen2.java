@@ -1,6 +1,5 @@
 package com.survive.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,7 +14,6 @@ public class MainMenuScreen2 implements Screen {
 
     private Stage stage;
     private Table root_table;
-    private Table header_table;
     private Skin skin;
     private Label header;
     private TextButton play_button;
@@ -73,7 +71,8 @@ public class MainMenuScreen2 implements Screen {
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log("Exit touchUp", "touch done at (" + x + ", " + y + ")");
-                System.exit(0);
+                // Exit cleanly
+                Gdx.app.exit();
             }
         });
 
