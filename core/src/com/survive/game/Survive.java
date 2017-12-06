@@ -32,7 +32,7 @@ public class Survive extends Game {
 	public void create () {
 
 		// Bind cursor within screen boundaries (THIS HIDES THE CURSOR IN MAIN MENU)
-		//Gdx.input.setCursorCatched(true);
+		Gdx.input.setCursorCatched(true);
 
 		// Get local screen dimensions (varies on machine)
 		screen_width = Gdx.graphics.getWidth();
@@ -60,25 +60,24 @@ public class Survive extends Game {
 		Pixmap pixmap = new Pixmap(cursor_radius * 2 + 1, cursor_radius * 2 + 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(0, 0, 0, 1);
 		pixmap.drawCircle(cursor_radius, cursor_radius, cursor_radius);
+		// Set anti-aliasing for cursor
 		cursor = new Texture(pixmap);
+		cursor.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
 		pixmap = new Pixmap(player_width, player_height, Pixmap.Format.RGBA8888);
 		pixmap.setColor(0, 0, 0, 1);
 		pixmap.fillTriangle(0, 0, (player_width - 1)/2, player_height - 1, player_width - 1, 0);
-		player = new Sprite(new Texture(pixmap), player_width, player_height);
+		// Set anti-aliasing for player
+		Texture texture = new Texture(pixmap);
+		texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		player = new Sprite(texture, player_width, player_height);
 
 		pixmap.dispose();
 
 		// Set clear color
 		Gdx.gl.glClearColor(1, 1, 1, 0);
 
-		// Set screen to main screen
-		// this.setScreen(new MainMenuScreen(this));
-
-		// Set screen to game screen
-		// this.setScreen(new GameScreen(this));
-
-		// Run MainMenuScreen2 from main Survive Game instead?
+		// Set Screen to MainMenuScreen2
 		this.setScreen(new MainMenuScreen2(this));
 	}
 
