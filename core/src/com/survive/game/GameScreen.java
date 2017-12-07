@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
@@ -36,6 +37,8 @@ public class GameScreen implements Screen {
 	private float offset_x;
 	private float offset_y;
 
+	private PowerUp test;
+
 	ExtendViewport item_viewport;
 	PowerUps power_ups;
 
@@ -58,6 +61,8 @@ public class GameScreen implements Screen {
 		player_max_speed = game.player_max_speed;
 
 		bitmap_font.getData().setScale(1);
+
+		test = new PowerUp(new Vector2(100, 100));
 	}
 
 	@Override
@@ -129,13 +134,16 @@ public class GameScreen implements Screen {
 
 		// Spawn powerups
 		power_ups.update(delta);
-		power_ups.render(sprite_batch);
 
-		// Re-draw player, cursor and FPS counter
+		// Begin sprite batch
 		sprite_batch.begin();
+		// Draw cursor
+		sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
+		// Draw powerups
+		power_ups.render(sprite_batch);
+		// Draw player
 		player.draw(sprite_batch);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 50, 50);
-		sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
 		sprite_batch.end();
 	}
 

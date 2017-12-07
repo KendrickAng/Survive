@@ -19,8 +19,6 @@ public class PowerUp {
 
     public void render(SpriteBatch batch) {
 
-        batch.begin();
         batch.draw(sprite, position.x, position.y);
-        batch.end();
     }
 }

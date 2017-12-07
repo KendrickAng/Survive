@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class PowerUps {
 
     private static final int SPAWN_RATE = 10;
+    private static final int MAX_SIZE = 16;
 
     Array<PowerUp> powerup_list;
     Viewport viewport;
@@ -22,17 +23,17 @@ public class PowerUps {
     public void init() {
 
         // Initialise array
-        powerup_list = new Array<PowerUp>(false, 16);
+        powerup_list = new Array<PowerUp>();
     }
 
     public void update(float delta) {
 
-        if(MathUtils.random() < delta * SPAWN_RATE) {
+        if(powerup_list.size < MAX_SIZE && MathUtils.random() < delta * SPAWN_RATE) {
 
             // Spawn new powerup
             Vector2 new_item_position = new Vector2(
                     MathUtils.random() * viewport.getWorldWidth(),
-                    viewport.getWorldHeight()
+                    MathUtils.random() * viewport.getWorldHeight()
             );
 
             PowerUp new_item = new PowerUp(new_item_position);
