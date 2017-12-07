@@ -32,7 +32,7 @@ public class Survive extends Game {
 	public void create () {
 
 		// Bind cursor within screen boundaries (THIS HIDES THE CURSOR IN MAIN MENU)
-		Gdx.input.setCursorCatched(true);
+		//Gdx.input.setCursorCatched(true);
 
 		// Get local screen dimensions (varies on machine)
 		screen_width = Gdx.graphics.getWidth();

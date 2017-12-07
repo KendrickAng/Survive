@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class GameScreen implements Screen {
 
@@ -35,6 +36,9 @@ public class GameScreen implements Screen {
 	private float offset_x;
 	private float offset_y;
 
+	ExtendViewport item_viewport;
+	PowerUps power_ups;
+
 	GameScreen(Survive game) {
 
 		screen_width = game.screen_width;
@@ -57,7 +61,11 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void show() {}
+	public void show() {
+
+		item_viewport = new ExtendViewport(screen_width, screen_height);
+		power_ups = new PowerUps(item_viewport);
+	}
 
 	@Override
 	public void render(float delta) {
@@ -116,7 +124,12 @@ public class GameScreen implements Screen {
 			player_y = screen_height - player_height/2;
 
 		// Clear the screen
+		item_viewport.apply(true);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// Spawn powerups
+		power_ups.update(delta);
+		power_ups.render(sprite_batch);
 
 		// Re-draw player, cursor and FPS counter
 		sprite_batch.begin();
@@ -127,7 +140,11 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+
+		item_viewport.update(width, height, true);
+		power_ups.init();
+	}
 
 	@Override
 	public void pause() {}
