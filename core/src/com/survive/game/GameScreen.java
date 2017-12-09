@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.GAME_HEIGHT;
@@ -40,6 +37,8 @@ public class GameScreen implements Screen, ContactListener{
 
 	private PowerUps power_ups;
 
+	private World world;
+
 	GameScreen(Survive game) {
 
 		viewport = game.viewport;
@@ -60,9 +59,12 @@ public class GameScreen implements Screen, ContactListener{
 		player_acceleration = game.player_acceleration;
 		player_max_speed = game.player_max_speed;
 
+		// Init power ups
 		viewport.apply();
 		bitmap_font.getData();
 		power_ups = new PowerUps();
+
+		world = new World(new Vector2(0,0), true);
 
 		// Don't restrict cursor to screen boundaries
 		// Gdx.input.setCursorCatched(true);
