@@ -10,7 +10,7 @@ import static com.survive.game.Survive.GAME_WIDTH;
 
 public class PowerUps {
 
-    private static final int SPAWN_RATE = 10;
+    private static final double SPAWN_RATE = 0.5;
     private static final int MAX_SIZE = 16;
 
     private Array<PowerUp> powerup_list;
