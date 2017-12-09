@@ -1,6 +1,7 @@
 package com.survive.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,13 +22,8 @@ public class Survive extends Game {
 	Vector2 cursor_position;
 	Sprite cursor;
 
-	int player_acceleration = 10;
-	int player_max_speed = 30;
-
-	private Texture cursor_texture;
-
 	@Override
-	public void create () {
+	public void create() {
 
 		// Initialise orthographic camera
 		OrthographicCamera camera = new OrthographicCamera();
@@ -39,29 +35,24 @@ public class Survive extends Game {
 		sprite_batch.setProjectionMatrix(camera.combined);
 
 		// Initialise remaining declared objects
-		bitmap_font = new BitmapFont();
-		bitmap_font.setColor(0, 0, 0, 1);
+		bitmap_font = new BitmapFont(Gdx.files.internal("bitmap-21.fnt"));
+		bitmap_font.setColor(1, 1, 1, 1);
 
-		// Init cursor coordinates
+		// Initialise cursor
 		cursor_position = new Vector2();
-
-		// Init cursor sprite
-		cursor_texture  = new Texture("cursor.png");
-		cursor_texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-		cursor = new Sprite(cursor_texture);
+		cursor = new Sprite(new Texture("cursor.bmp"));
 
 		// Set Screen to MainMenuScreen
 		this.setScreen(new MainMenuScreen(this));
 	}
 
 	@Override
-	public void render () { super.render(); }
+	public void render() { super.render(); }
 
 	@Override
-	public void dispose () {
+	public void dispose() {
 
 		sprite_batch.dispose();
 		bitmap_font.dispose();
-		cursor_texture.dispose();
 	}
 }

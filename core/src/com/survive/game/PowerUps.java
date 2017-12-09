@@ -25,13 +25,7 @@ public class PowerUps {
 
         if (powerup_list.size < MAX_SIZE && MathUtils.random() < delta * SPAWN_RATE) {
 
-            // Spawn new powerup
-            Vector2 new_item_position = new Vector2(
-                    MathUtils.random() * GAME_WIDTH,
-                    MathUtils.random() * GAME_HEIGHT
-            );
-
-            PowerUp new_item = new PowerUp(new_item_position);
+            PowerUp new_item = new PowerUp(1);
             powerup_list.add(new_item);
         }
     }
