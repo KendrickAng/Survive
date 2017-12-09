@@ -2,11 +2,7 @@ package com.survive.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-
-import static com.survive.game.Survive.GAME_HEIGHT;
-import static com.survive.game.Survive.GAME_WIDTH;
 
 public class PowerUps {
 
@@ -18,6 +14,7 @@ public class PowerUps {
     PowerUps() {
 
         // Initialise array
+		// TODO: Change to PowerUpType class
         powerup_list = new Array<PowerUp>();
     }
 
@@ -28,12 +25,14 @@ public class PowerUps {
             PowerUp new_item = new PowerUp(1);
             powerup_list.add(new_item);
         }
+
+        for (PowerUp power_up : powerup_list)
+        	power_up.update(delta);
     }
 
     public void render(SpriteBatch batch) {
 
-        for (PowerUp power_up : powerup_list) {
-            power_up.render(batch);
-        }
+        for (PowerUp power_up : powerup_list)
+        	power_up.render(batch);
     }
 }

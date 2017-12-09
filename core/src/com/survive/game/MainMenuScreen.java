@@ -2,6 +2,7 @@ package com.survive.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,7 +38,7 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(1, 1, 1, 1);
+        pixmap.setColor(Color.valueOf("#FFFFFF"));
         pixmap.drawPixel(0, 0);
         background = new Image(new Texture(pixmap));
         background.setSize(GAME_WIDTH, GAME_HEIGHT);
