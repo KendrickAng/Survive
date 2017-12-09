@@ -10,7 +10,7 @@ import static com.survive.game.Survive.GAME_WIDTH;
 
 public class PowerUps {
 
-    private static final int SPAWN_RATE = 10;
+    private static final double SPAWN_RATE = 0.5;
     private static final int MAX_SIZE = 16;
 
     private Array<PowerUp> powerup_list;
@@ -25,13 +25,7 @@ public class PowerUps {
 
         if (powerup_list.size < MAX_SIZE && MathUtils.random() < delta * SPAWN_RATE) {
 
-            // Spawn new powerup
-            Vector2 new_item_position = new Vector2(
-                    MathUtils.random() * GAME_WIDTH,
-                    MathUtils.random() * GAME_HEIGHT
-            );
-
-            PowerUp new_item = new PowerUp(new_item_position);
+            PowerUp new_item = new PowerUp(1);
             powerup_list.add(new_item);
         }
     }

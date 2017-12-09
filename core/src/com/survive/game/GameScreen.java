@@ -4,17 +4,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.GAME_HEIGHT;
 import static com.survive.game.Survive.GAME_WIDTH;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, ContactListener {
+
+	private static final int PLAYER_ACCELERATION = 10;
+	private static final int PLAYER_MAX_SPEED = 30;
 
 	private Viewport viewport;
 	private Vector2 cursor_position;
@@ -22,11 +30,7 @@ public class GameScreen implements Screen {
 	private BitmapFont bitmap_font;
 	private Sprite game_background;
 	private Sprite cursor;
-	private Texture player_texture;
 	private Sprite player;
-
-	private int player_acceleration;
-	private int player_max_speed;
 
 	private float player_x;
 	private float player_y;
@@ -44,24 +48,23 @@ public class GameScreen implements Screen {
 		bitmap_font = game.bitmap_font;
 		cursor = game.cursor;
 
-		game_background = new Sprite(new Texture("game_background.png"));
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(38/255f, 50/255f, 56/255f, 1);
+        pixmap.drawPixel(0, 0);
+		game_background = new Sprite(new Texture(pixmap));
 		game_background.setSize(GAME_WIDTH, GAME_HEIGHT);
+		pixmap.dispose();
 
 		// Init player sprite
-		player_texture  = new Texture("player.png");
-		player_texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-		player = new Sprite(player_texture);
+		player = new Sprite(new Texture("player.bmp"));
 		player.setOrigin(player.getWidth()/2, player.getHeight()/2);
-
-		player_acceleration = game.player_acceleration;
-		player_max_speed = game.player_max_speed;
 
 		viewport.apply();
 		bitmap_font.getData();
 		power_ups = new PowerUps();
 
 		// Don't restrict cursor to screen boundaries
-		// Gdx.input.setCursorCatched(true);
+		Gdx.input.setCursorCatched(true);
 	}
 
 	@Override
@@ -84,7 +87,7 @@ public class GameScreen implements Screen {
 		// For Android phones (tilting sensor)
 		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
 
-			offset_x += Math.toDegrees(Gdx.input.getGyroscopeX())/10;
+			offset_x -= Math.toDegrees(Gdx.input.getGyroscopeX())/10;
 			offset_y += Math.toDegrees(Gdx.input.getGyroscopeY())/10;
 
 		} else {
@@ -99,13 +102,13 @@ public class GameScreen implements Screen {
 
 		// Determine current speed, varies on cursor-player distance
 		if (offset_distance > player.getHeight()/2)
-			player_speed = offset_distance *player_acceleration* delta;
+			player_speed = offset_distance * PLAYER_ACCELERATION * delta;
 
 		else
 			player_speed = 0;
 
-		if (player_speed > player_max_speed)
-			player_speed = player_max_speed;
+		if (player_speed > PLAYER_MAX_SPEED)
+			player_speed = PLAYER_MAX_SPEED;
 
 		// Add displacement moved in one frame (x and y axis)
 		player_x -= Math.sin(Math.toRadians(player_rotation))* player_speed;
@@ -132,7 +135,9 @@ public class GameScreen implements Screen {
 
 		// Render everything
 		sprite_batch.begin();
+		sprite_batch.disableBlending();
 		game_background.draw(sprite_batch);
+		sprite_batch.enableBlending();
 		power_ups.render(sprite_batch);
 		player.draw(sprite_batch);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 50, 50);
@@ -156,8 +161,25 @@ public class GameScreen implements Screen {
 	public void hide() {}
 
 	@Override
-	public void dispose() {
+	public void dispose() {}
 
-		player_texture.dispose();
+	@Override
+	public void beginContact(Contact contact) {
+
+	}
+
+	@Override
+	public void endContact(Contact contact) {
+
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+
 	}
 }

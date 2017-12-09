@@ -3,6 +3,7 @@ package com.survive.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -35,8 +36,12 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(game.viewport);
         Gdx.input.setInputProcessor(stage);
 
-        background = new Image(new Texture("menu_background.png"));
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(1, 1, 1, 1);
+        pixmap.drawPixel(0, 0);
+        background = new Image(new Texture(pixmap));
         background.setSize(GAME_WIDTH, GAME_HEIGHT);
+        pixmap.dispose();
 
         skin = new Skin(Gdx.files.internal("glassy/skin/glassy-ui.json"));
 

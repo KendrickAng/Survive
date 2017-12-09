@@ -3,22 +3,27 @@ package com.survive.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
+
+import static com.survive.game.Survive.GAME_HEIGHT;
+import static com.survive.game.Survive.GAME_WIDTH;
 
 public class PowerUp {
 
-    private Vector2 position;
+    private float x;
+    private float y;
+    private Sprite sprite;
 
-    private Texture texture = new Texture("power_up_temp.jpg");
-    private Sprite sprite = new Sprite(texture);
+    PowerUp(int type) {
 
-    PowerUp(Vector2 position) {
+        x = (float) Math.random() * GAME_WIDTH;
+        y = (float) Math.random() * GAME_HEIGHT;
 
-        this.position = position;
+        sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
     }
 
     public void render(SpriteBatch batch) {
 
-        batch.draw(sprite, position.x, position.y);
+        sprite.setPosition(x, y);
+        sprite.draw(batch);
     }
 }
