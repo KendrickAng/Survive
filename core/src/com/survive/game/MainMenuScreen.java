@@ -3,53 +3,96 @@ package com.survive.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import static com.survive.game.Survive.GAME_HEIGHT;
+import static com.survive.game.Survive.GAME_WIDTH;
 
 public class MainMenuScreen implements Screen {
 
-    private static final int PLAY_BUTTON_HEIGHT = 300;
-    private static final int PLAY_BUTTON_WIDTH = 600;
-    private static final int EXIT_BUTTON_HEIGHT = 300;
-    private static final int EXIT_BUTTON_WIDTH = 600;
+    private Stage stage;
+    private Table root_table;
+    private Skin skin;
+    private Label header;
+    private TextButton play_button;
+    private TextButton exit_button;
+    private Image background;
 
-    private int play_button_y = Gdx.graphics.getHeight()/8;
-    private int play_button_x = Gdx.graphics.getWidth()/4 - PLAY_BUTTON_WIDTH/2;
-    private int exit_button_y = play_button_y;
-    private int exit_button_x = Gdx.graphics.getWidth() * 3/4 - EXIT_BUTTON_WIDTH/2;
+    MainMenuScreen(final Survive game) {
 
-	private OrthographicCamera camera;
-	private Vector3 cursor_position;
-	private SpriteBatch sprite_batch;
-	private BitmapFont bitmap_font;
-	private Texture cursor;
+        // Define constants
+        final int COLUMN_WIDTH = Gdx.graphics.getWidth() / 12;
+        final int ROW_HEIGHT = Gdx.graphics.getWidth() / 12;
+        final float TABLE_PADDING = 10.0f;
 
-    private Texture playButtonActive;
-    private Texture playButtonInactive;
-    private Texture exitButtonActive;
-    private Texture exitButtonInactive;
+        // Stage catches events
+        stage = new Stage(game.viewport);
+        Gdx.input.setInputProcessor(stage);
 
-    private int cursor_radius;
+        background = new Image(new Texture("menu_background.png"));
+        background.setSize(GAME_WIDTH, GAME_HEIGHT);
 
-    MainMenuScreen(Survive game) {
+        skin = new Skin(Gdx.files.internal("glassy/skin/glassy-ui.json"));
 
-        //Initialise game and textures
-        playButtonActive = new Texture("play_inverse.jpg");
-        playButtonInactive = new Texture("play.jpg");
-        exitButtonActive = new Texture("exit_inverse.jpg");
-        exitButtonInactive = new Texture("exit.jpg");
+        // Size root table to stage, set default padding
+        root_table = new Table(skin);
+        root_table.setFillParent(true);
+        root_table.setDebug(true);
+        root_table.defaults().pad(TABLE_PADDING);
 
-		camera = game.camera;
-		cursor_position = game.cursor_position;
-		sprite_batch = game.sprite_batch;
-		bitmap_font = game.bitmap_font;
-		cursor = game.cursor;
-        cursor_radius = game.cursor_radius;
+        // Initialise, define header
+        header = new Label("SURVIVE", skin, "black");
+        header.setAlignment(Align.center);
+        header.setFontScale(2.0f);
 
-        bitmap_font.getData().setScale(5);
+        // Create Play button and
+        play_button = new TextButton("Play", skin, "default");
+        play_button.setPosition(COLUMN_WIDTH, ROW_HEIGHT);
+        play_button.addListener(new InputListener() {
+
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Play touchDown", "touch started at (" + x + ", " + y + ")");
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Play touchUp", "touch done at (" + x + ", " + y + ")");
+                stage.dispose();
+                game.setScreen(new GameScreen(game));
+            }
+        });
+
+        // Create Exit button
+        exit_button = new TextButton("Exit", skin, "default");
+        exit_button.setPosition(COLUMN_WIDTH * 8, ROW_HEIGHT);
+        exit_button.addListener(new InputListener() {
+
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Exit touchDown", "touch started at (" + x + ", " + y + ")");
+                return true;
+            }
+
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("Exit touchUp", "touch done at (" + x + ", " + y + ")");
+                // Exit cleanly
+                Gdx.app.exit();
+            }
+        });
+
+        // Add actors to root table and configure
+        root_table.add(header).colspan(2).fillX().top();
+        root_table.row();
+        root_table.add(play_button).width(COLUMN_WIDTH * 4).height(ROW_HEIGHT).expand();
+        root_table.add(exit_button).width(COLUMN_WIDTH * 4).height(ROW_HEIGHT).expand();
+
+        stage.addActor(background);
+        stage.addActor(root_table);
     }
 
     @Override
@@ -60,54 +103,22 @@ public class MainMenuScreen implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Keep tracking cursor position, transform screen to world coordinates
-        cursor_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(cursor_position);
-
-        sprite_batch.begin();
-        // Game header
-        bitmap_font.draw(sprite_batch, "Welcome to Survive.", Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight() * 2/3);
-
-        // Highlight buttons if mouse hovers over
-        if (cursor_position.x <= (play_button_x + PLAY_BUTTON_WIDTH) && cursor_position.x >= play_button_x &&
-                cursor_position.y <= (play_button_y + PLAY_BUTTON_HEIGHT) && cursor_position.y >= play_button_y)
-
-            sprite_batch.draw(playButtonActive, play_button_x, play_button_y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
-        else
-
-            sprite_batch.draw(playButtonInactive, play_button_x, play_button_y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
-
-        if (cursor_position.x <= (exit_button_x + EXIT_BUTTON_WIDTH) && cursor_position.x >= exit_button_x &&
-                cursor_position.y <= (exit_button_y + EXIT_BUTTON_HEIGHT) && cursor_position.y >= exit_button_y)
-
-            sprite_batch.draw(exitButtonActive, exit_button_x, exit_button_y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-        else
-
-            sprite_batch.draw(exitButtonInactive, exit_button_x, exit_button_y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-
-        sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
-        sprite_batch.end();
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
 
     @Override
-    public void pause() {}
+    public void pause() { }
 
     @Override
-    public void resume() {}
+    public void resume() { }
 
     @Override
-    public void hide() {}
+    public void hide() { }
 
     @Override
-    public void dispose() {
-
-        bitmap_font.dispose();
-        playButtonActive.dispose();
-        playButtonInactive.dispose();
-        exitButtonActive.dispose();
-        exitButtonInactive.dispose();
-    }
+    public void dispose() { stage.dispose(); }
 }

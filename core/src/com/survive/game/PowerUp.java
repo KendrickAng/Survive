@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PowerUp {
 
-    Vector2 position;
+    private Vector2 position;
 
-    Texture texture = new Texture("power_up_temp.jpg");
-    Sprite sprite = new Sprite(texture);
+    private Texture texture = new Texture("power_up_temp.jpg");
+    private Sprite sprite = new Sprite(texture);
 
-    public PowerUp(Vector2 position) {
+    PowerUp(Vector2 position) {
 
         this.position = position;
     }

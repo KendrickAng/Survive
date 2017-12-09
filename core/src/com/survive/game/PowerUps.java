@@ -4,23 +4,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.Viewport;
+
+import static com.survive.game.Survive.GAME_HEIGHT;
+import static com.survive.game.Survive.GAME_WIDTH;
 
 public class PowerUps {
 
     private static final int SPAWN_RATE = 10;
     private static final int MAX_SIZE = 16;
 
-    Array<PowerUp> powerup_list;
-    Viewport viewport;
+    private Array<PowerUp> powerup_list;
 
-    public PowerUps(Viewport viewport) {
-
-        this.viewport = viewport;
-        init();
-    }
-
-    public void init() {
+    PowerUps() {
 
         // Initialise array
         powerup_list = new Array<PowerUp>();
@@ -28,12 +23,12 @@ public class PowerUps {
 
     public void update(float delta) {
 
-        if(powerup_list.size < MAX_SIZE && MathUtils.random() < delta * SPAWN_RATE) {
+        if (powerup_list.size < MAX_SIZE && MathUtils.random() < delta * SPAWN_RATE) {
 
             // Spawn new powerup
             Vector2 new_item_position = new Vector2(
-                    MathUtils.random() * viewport.getWorldWidth(),
-                    MathUtils.random() * viewport.getWorldHeight()
+                    MathUtils.random() * GAME_WIDTH,
+                    MathUtils.random() * GAME_HEIGHT
             );
 
             PowerUp new_item = new PowerUp(new_item_position);
@@ -43,7 +38,7 @@ public class PowerUps {
 
     public void render(SpriteBatch batch) {
 
-        for(PowerUp power_up : powerup_list) {
+        for (PowerUp power_up : powerup_list) {
             power_up.render(batch);
         }
     }

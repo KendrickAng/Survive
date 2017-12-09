@@ -2,8 +2,10 @@ package com.survive.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.survive.game.MainMenuScreen2;
 import com.survive.game.Survive;
+
+import static com.survive.game.Survive.GAME_HEIGHT;
+import static com.survive.game.Survive.GAME_WIDTH;
 
 public class DesktopLauncher {
 
@@ -12,9 +14,9 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Survive";
 		config.useGL30 = false;
-		config.width = 1920;
-		config.height = 1080;
-		config.fullscreen = true;
+		config.width = GAME_WIDTH;
+		config.height = GAME_HEIGHT;
+		config.fullscreen = false;
 		config.vSyncEnabled = false;
 		config.foregroundFPS = 0;
 		config.backgroundFPS = 0;

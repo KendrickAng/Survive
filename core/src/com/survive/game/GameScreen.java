@@ -4,30 +4,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
+import static com.survive.game.Survive.GAME_HEIGHT;
+import static com.survive.game.Survive.GAME_WIDTH;
 
 public class GameScreen implements Screen {
 
-	private int screen_width;
-	private int screen_height;
-
-	private OrthographicCamera camera;
-	private Vector3 cursor_position;
+	private Viewport viewport;
+	private Vector2 cursor_position;
 	private SpriteBatch sprite_batch;
 	private BitmapFont bitmap_font;
-	private Texture cursor;
+	private Sprite game_background;
+	private Sprite cursor;
+	private Texture player_texture;
 	private Sprite player;
 
-	private int cursor_radius;
-	private int player_width;
-	private int player_height;
 	private int player_acceleration;
 	private int player_max_speed;
 
@@ -37,40 +34,38 @@ public class GameScreen implements Screen {
 	private float offset_x;
 	private float offset_y;
 
-	private PowerUp test;
-
-	ExtendViewport item_viewport;
-	PowerUps power_ups;
+	private PowerUps power_ups;
 
 	GameScreen(Survive game) {
 
-		screen_width = game.screen_width;
-		screen_height = game.screen_height;
-
-		camera = game.camera;
+		viewport = game.viewport;
 		cursor_position = game.cursor_position;
 		sprite_batch = game.sprite_batch;
 		bitmap_font = game.bitmap_font;
-		player = game.player;
 		cursor = game.cursor;
 
-		cursor_radius = game.cursor_radius;
-		player_width = game.player_width;
-		player_height = game.player_height;
+		game_background = new Sprite(new Texture("game_background.png"));
+		game_background.setSize(GAME_WIDTH, GAME_HEIGHT);
+
+		// Init player sprite
+		player_texture  = new Texture("player.png");
+		player_texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		player = new Sprite(player_texture);
+		player.setOrigin(player.getWidth()/2, player.getHeight()/2);
+
 		player_acceleration = game.player_acceleration;
 		player_max_speed = game.player_max_speed;
 
-		bitmap_font.getData().setScale(1);
+		viewport.apply();
+		bitmap_font.getData();
+		power_ups = new PowerUps();
 
-		test = new PowerUp(new Vector2(100, 100));
+		// Don't restrict cursor to screen boundaries
+		// Gdx.input.setCursorCatched(true);
 	}
 
 	@Override
-	public void show() {
-
-		item_viewport = new ExtendViewport(screen_width, screen_height);
-		power_ups = new PowerUps(item_viewport);
-	}
+	public void show() {}
 
 	@Override
 	public void render(float delta) {
@@ -78,11 +73,12 @@ public class GameScreen implements Screen {
 		float player_speed;
 
 		// Keep tracking cursor position, transform screen to world coordinates
-		cursor_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(cursor_position);
+		cursor_position.set(Gdx.input.getX(), Gdx.input.getY());
+		viewport.unproject(cursor_position);
+		cursor.setPosition(cursor_position.x - cursor.getWidth()/2, cursor_position.y - cursor.getHeight()/2);
 
 		// Set player sprite positions
-		player.setPosition(player_x - player_width/2, player_y - player_height/2);
+		player.setPosition(player_x - player.getWidth()/2, player_y - player.getHeight()/2);
 		player.setRotation(player_rotation);
 
 		// For Android phones (tilting sensor)
@@ -94,15 +90,15 @@ public class GameScreen implements Screen {
 		} else {
 
 			// Find cursor-player distance and angle from x-axis
-			offset_x = cursor_position.x - player_x;
-			offset_y = player_y - cursor_position.y;
+			offset_x = player_x - cursor_position.x;
+			offset_y = cursor_position.y - player_y;
 		}
 
 		float offset_distance = (float) Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
 		player_rotation = (float) Math.toDegrees(Math.atan2(offset_x, offset_y));
 
 		// Determine current speed, varies on cursor-player distance
-		if (offset_distance > player_height/2)
+		if (offset_distance > player.getHeight()/2)
 			player_speed = offset_distance *player_acceleration* delta;
 
 		else
@@ -112,46 +108,42 @@ public class GameScreen implements Screen {
 			player_speed = player_max_speed;
 
 		// Add displacement moved in one frame (x and y axis)
-		player_x += Math.sin(Math.toRadians(player_rotation))* player_speed;
-		player_y -= Math.cos(Math.toRadians(player_rotation))* player_speed;
+		player_x -= Math.sin(Math.toRadians(player_rotation))* player_speed;
+		player_y += Math.cos(Math.toRadians(player_rotation))* player_speed;
 
 		// Implement screen boundaries
-		if (player_x < player_height/2)
-			player_x = player_height/2;
+		if (player_x < player.getHeight()/2)
+			player_x = player.getHeight()/2;
 
-		if (player_x > screen_width - player_height/2)
-			player_x = screen_width - player_height/2;
+		if (player_x > GAME_WIDTH - player.getHeight()/2)
+			player_x = GAME_WIDTH - player.getHeight()/2;
 
-		if (player_y < player_height/2)
-			player_y = player_height/2;
+		if (player_y < player.getHeight()/2)
+			player_y = player.getHeight()/2;
 
-		if (player_y > screen_height - player_height/2)
-			player_y = screen_height - player_height/2;
-
-		// Clear the screen
-		item_viewport.apply(true);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if (player_y > GAME_HEIGHT - player.getHeight()/2)
+			player_y = GAME_HEIGHT - player.getHeight()/2;
 
 		// Spawn powerups
 		power_ups.update(delta);
 
-		// Begin sprite batch
+		// Clear the screen
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// Render everything
 		sprite_batch.begin();
-		// Draw cursor
-		sprite_batch.draw(cursor, cursor_position.x - cursor_radius, cursor_position.y - cursor_radius);
-		// Draw powerups
+		game_background.draw(sprite_batch);
 		power_ups.render(sprite_batch);
-		// Draw player
 		player.draw(sprite_batch);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 50, 50);
+		cursor.draw(sprite_batch);
 		sprite_batch.end();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 
-		item_viewport.update(width, height, true);
-		power_ups.init();
+		viewport.update(width, height);
 	}
 
 	@Override
@@ -164,5 +156,8 @@ public class GameScreen implements Screen {
 	public void hide() {}
 
 	@Override
-	public void dispose() {}
+	public void dispose() {
+
+		player_texture.dispose();
+	}
 }
