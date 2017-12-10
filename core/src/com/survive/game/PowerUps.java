@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class PowerUps {
 
-    private static final double SPAWN_RATE = 0.5;
+    private static final double SPAWN_RATE = 0.2;
     private static final int MAX_SIZE = 16;
 
     private Array<PowerUp> powerup_list;
@@ -34,5 +34,10 @@ public class PowerUps {
 
         for (PowerUp power_up : powerup_list)
         	power_up.render(batch);
+    }
+
+    public Array<PowerUp> getPowerUps() {
+
+        return powerup_list;
     }
 }
