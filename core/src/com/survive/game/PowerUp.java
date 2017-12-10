@@ -18,6 +18,7 @@ public class PowerUp {
     private double rotation_speed;
     private double x_speed;
     private double y_speed;
+    private boolean collected;
     private Sprite sprite;
 
     PowerUp(int type) {
@@ -38,6 +39,8 @@ public class PowerUp {
 
         x_speed = Math.sin(theta) * speed;
         y_speed = Math.cos(theta) * speed;
+
+        collected = false;
     }
 
     public void update(float delta) {
@@ -58,5 +61,20 @@ public class PowerUp {
         sprite.setPosition(x - sprite.getWidth()/2, y - sprite.getHeight()/2);
     }
 
-    public void render(SpriteBatch batch)  { sprite.draw(batch); }
+    public void render(SpriteBatch batch)  {
+
+        if (collected) return;
+
+        sprite.draw(batch);
+    }
+
+    public float getX() {return x;}
+
+    public float getY() {return y;}
+
+    public Sprite getSprite() {return sprite;}
+
+    public void setCollected(boolean bool) {collected = bool;}
+
+    public boolean getCollected() {return collected;}
 }

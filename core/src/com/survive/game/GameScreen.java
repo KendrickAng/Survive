@@ -10,17 +10,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.GAME_HEIGHT;
 import static com.survive.game.Survive.GAME_WIDTH;
 
-public class GameScreen implements Screen, ContactListener {
+public class GameScreen implements Screen {
 
 	private static final int PLAYER_ACCELERATION = 10;
 	private static final int PLAYER_MAX_SPEED = 30;
@@ -48,6 +45,10 @@ public class GameScreen implements Screen, ContactListener {
 	Enemy test;
 
 	private PowerUps power_ups;
+
+	// For collision detection
+	private Rectangle r1 = new Rectangle();
+	private Rectangle r2 = new Rectangle();
 
 	GameScreen(Survive game) {
 
@@ -152,6 +153,7 @@ public class GameScreen implements Screen, ContactListener {
 		// Update
 		power_ups.update(delta);
 		test.update(delta, player_position);
+		testCollisions();
 		// TODO: EnemyPattern class
 
 		// Clear the screen
@@ -172,6 +174,37 @@ public class GameScreen implements Screen, ContactListener {
 		sprite_batch.end();
 	}
 
+	private void onCollisionPlayerWithItem(PowerUp power_up) {
+
+		power_up.setCollected(true);
+		Gdx.app.log("Item", "Item collected!");
+	};
+
+	private void testCollisions() {
+
+		// Set hitboxes
+		r1.set(player_position.x - player.getWidth()/2,
+				player_position.y - player.getHeight()/2,
+				player.getWidth(),
+				player.getHeight());
+
+		// Test collisions Player <--> Item1
+		for (PowerUp item1 : power_ups.getPowerUps()) {
+
+			if(item1.getCollected()) continue;
+
+			r2.set(item1.getX() - item1.getSprite().getWidth()/2,
+					item1.getY() - item1.getSprite().getHeight()/2,
+					item1.getSprite().getWidth(),
+					item1.getSprite().getHeight());
+
+			if(!r1.overlaps(r2)) continue;
+
+			onCollisionPlayerWithItem(item1);
+			break;
+		}
+	}
+
 	@Override
 	public void resize(int width, int height) {
 
@@ -189,24 +222,4 @@ public class GameScreen implements Screen, ContactListener {
 
 	@Override
 	public void dispose() {}
-
-	@Override
-	public void beginContact(Contact contact) {
-
-	}
-
-	@Override
-	public void endContact(Contact contact) {
-
-	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-
-	}
-
-	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-
-	}
 }
