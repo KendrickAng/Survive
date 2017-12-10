@@ -13,8 +13,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Survive extends Game {
 
-	public static final int GAME_WIDTH = 1280;
-	public static final int GAME_HEIGHT = 720;
+	public static final int GAME_WIDTH = 854;
+	public static final int GAME_HEIGHT = 480;
 
 	Viewport viewport;
 	SpriteBatch sprite_batch;

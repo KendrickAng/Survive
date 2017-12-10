@@ -2,7 +2,6 @@ package com.survive.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
@@ -29,18 +28,18 @@ public class Enemy {
 		y += Math.cos(theta) * speed * delta;
 	}
 
-	void playerChase(float delta, Vector2 player_position) {
+	void playerChase(float delta, Player player) {
 
 		// Chase player
-		theta = Math.atan2(x - player_position.x, player_position.y - y);
+		theta = Math.atan2(x - player.x, player.y - y);
 		speed = PLAYER_CHASE_SPEED;
 		move(delta);
 	}
 
-	boolean playerCollision(Vector2 player_position) {
+	boolean playerCollision(Player player) {
 
-		float offset_x = x - player_position.x;
-		float offset_y = y - player_position.y;
+		float offset_x = x - player.x;
+		float offset_y = y - player.y;
 		double distance = Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
 		return distance < sprite.getWidth()/2 + PLAYER_COLLISION_RADIUS;
 	}

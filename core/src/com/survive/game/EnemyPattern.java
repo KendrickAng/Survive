@@ -18,7 +18,7 @@ public class EnemyPattern {
 	private static final int PATTERN_2_ENEMIES = 5;
 	private static final float PATTERN_2_SPAWN_INTERVAL = 0.2f;
 
-	private static final int PATTERN_3_ENEMIES = 10;
+	private static final int PATTERN_3_ENEMIES = 8;
 	private static final float PATTERN_3_SPAWN_INTERVAL = 0.1f;
 	private static final int PATTERN_3_SPEED = 50;
 
@@ -65,10 +65,10 @@ public class EnemyPattern {
 		pattern_array.first().enemy_array.addAll(enemy_array);
 	}
 
-	void pattern1(float delta, Vector2 player_position) {
+	void pattern1(float delta, Player player) {
 
 		for (Enemy enemy:enemy_array)
-			enemy.playerChase(delta, player_position);
+			enemy.playerChase(delta, player);
 	}
 
 	void pattern2(float delta) {
@@ -127,7 +127,7 @@ public class EnemyPattern {
 		}
 	}
 
-	void pattern4(float delta, Vector2 player_position) {
+	void pattern4(float delta, Player player) {
 
 		timer += delta;
 
@@ -136,7 +136,7 @@ public class EnemyPattern {
 			if (timer > PATTERN_4_SPAWN_INTERVAL) {
 
 				if (this.player_position == null)
-					this.player_position = new Vector2(player_position.x, player_position.y);
+					this.player_position = new Vector2(player.x, player.y);
 
 				double theta = Math.PI*2/PATTERN_4_ENEMIES * spawned;
 
@@ -176,10 +176,10 @@ public class EnemyPattern {
 			enemy.update();
 	}
 
-	void playerCollision(Vector2 player_position) {
+	void playerCollision(Player player) {
 
 		for (Enemy enemy:enemy_array)
-			if (enemy.playerCollision(player_position))
+			if (enemy.playerCollision(player))
 				enemy_array.removeValue(enemy, true);
 	}
 

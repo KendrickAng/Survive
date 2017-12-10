@@ -1,7 +1,6 @@
 package com.survive.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,30 +19,23 @@ import static com.survive.game.Survive.GAME_WIDTH;
 
 public class GameScreen implements Screen {
 
-	private static final int PLAYER_ACCELERATION = 10;
-	private static final int PLAYER_MAX_SPEED = 30;
 	private static final int GAME_DOCK_PADDING = 10;
 	private static final int DOCK_HEIGHT = 14 + GAME_DOCK_PADDING * 2;
+	private static final int SCORE = 1234567890;
 
 	static final int MAP_HEIGHT = GAME_HEIGHT - DOCK_HEIGHT;
 	static final int MAP_WIDTH = GAME_WIDTH;
 
 	private Viewport viewport;
 	private Vector2 cursor_position;
-	private Vector2 player_position;
 	private SpriteBatch sprite_batch;
 	private BitmapFont bitmap_font;
 	private Sprite game_background;
 	private Sprite game_dock;
 	private Sprite cursor;
-	private Sprite player;
+	private Player player;
 	private Array<EnemyPattern> pattern_array;
 	private PowerUps power_ups;
-
-	private float player_rotation;
-	private float offset_x;
-	private float offset_y;
-	private int player_score = 1234567890;
 
 	// For collision detection
 	private Rectangle r1 = new Rectangle();
@@ -73,16 +65,15 @@ public class GameScreen implements Screen {
 
 		pixmap.dispose();
 
-		// Init player sprite
-		player = new Sprite(new Texture("player.bmp"));
-		player.setOrigin(player.getWidth()/2, player.getHeight()/2);
-		player_position = new Vector2(MAP_WIDTH/2, MAP_HEIGHT/2);
+		// Init Player
+		player = new Player(new Sprite(new Texture("player.bmp")));
 
-		Sprite enemy = new Sprite(new Texture("enemy.bmp"));
+		// Init Enemy Patterns
 		pattern_array = new Array<EnemyPattern>();
-		pattern_array.add(new EnemyPattern(enemy, pattern_array, 1, 0));
+		pattern_array.add(new EnemyPattern(new Sprite(new Texture("enemy.bmp")), pattern_array, 1, 0));
 		pattern_array.first().next_pattern(2);
 
+		// Set Viewport to FitViewport
 		viewport.apply();
 		bitmap_font.getData();
 		power_ups = new PowerUps();
@@ -97,63 +88,15 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		float player_speed;
-
 		// Keep tracking cursor position, transform screen to world coordinates
 		cursor_position.set(Gdx.input.getX(), Gdx.input.getY());
 		viewport.unproject(cursor_position);
 		cursor.setPosition(cursor_position.x - cursor.getWidth()/2, cursor_position.y - cursor.getHeight()/2);
 
-		// Set player sprite positions
-		player.setPosition(player_position.x - player.getWidth()/2, player_position.y - player.getHeight()/2);
-		player.setRotation(player_rotation);
-
-		// For Android phones (tilting sensor)
-		// TODO: Use RotationVector Sensor
-		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
-
-			offset_x -= Math.toDegrees(Gdx.input.getGyroscopeX())/10;
-			offset_y += Math.toDegrees(Gdx.input.getGyroscopeY())/10;
-
-		} else {
-
-			// Find cursor-player distance and angle from x-axis
-			offset_x = player_position.x - cursor_position.x;
-			offset_y = cursor_position.y - player_position.y;
-		}
-
-		float offset_distance = (float) Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
-		player_rotation = (float) Math.toDegrees(Math.atan2(offset_x, offset_y));
-
-		// Determine current speed, varies on cursor-player distance
-		if (offset_distance > player.getHeight()/2)
-			player_speed = offset_distance * PLAYER_ACCELERATION * delta;
-
-		else
-			player_speed = 0;
-
-		if (player_speed > PLAYER_MAX_SPEED)
-			player_speed = PLAYER_MAX_SPEED;
-
-		// Add displacement moved in one frame (x and y axis)
-		player_position.x -= Math.sin(Math.toRadians(player_rotation))* player_speed;
-		player_position.y += Math.cos(Math.toRadians(player_rotation))* player_speed;
-
-		// Implement screen boundaries
-		if (player_position.x < player.getHeight()/2)
-			player_position.x = player.getHeight()/2;
-
-		if (player_position.x > MAP_WIDTH - player.getHeight()/2)
-			player_position.x = MAP_WIDTH - player.getHeight()/2;
-
-		if (player_position.y < player.getHeight()/2)
-			player_position.y = player.getHeight()/2;
-
-		if (player_position.y > MAP_HEIGHT - player.getHeight()/2)
-			player_position.y = MAP_HEIGHT - player.getHeight()/2;
-
-		// Update
+		// Update everything
 		power_ups.update(delta);
+		player.cursorOffset(cursor_position);
+		player.update(delta);
 		testCollisions();
 
 		for (EnemyPattern pattern:pattern_array) {
@@ -161,7 +104,7 @@ public class GameScreen implements Screen {
 			switch (pattern.pattern) {
 
 				case 1:
-					pattern.pattern1(delta, player_position);
+					pattern.pattern1(delta, player);
 					break;
 
 				case 2:
@@ -173,12 +116,12 @@ public class GameScreen implements Screen {
 					break;
 
 				case 4:
-					pattern.pattern4(delta, player_position);
+					pattern.pattern4(delta, player);
 					break;
 			}
 
 			pattern.update();
-			pattern.playerCollision(player_position);
+			pattern.playerCollision(player);
 		}
 
 		// Clear the screen
@@ -195,8 +138,8 @@ public class GameScreen implements Screen {
 		for (EnemyPattern pattern:pattern_array)
 			pattern.render(sprite_batch);
 
-		player.draw(sprite_batch);
-		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(player_score), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
+		player.render(sprite_batch);
+		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(SCORE), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), GAME_DOCK_PADDING + 300, GAME_HEIGHT - GAME_DOCK_PADDING);
 		cursor.draw(sprite_batch);
 		sprite_batch.end();
@@ -211,10 +154,10 @@ public class GameScreen implements Screen {
 	private void testCollisions() {
 
 		// Set hitboxes
-		r1.set(player_position.x - player.getWidth()/2,
-				player_position.y - player.getHeight()/2,
-				player.getWidth(),
-				player.getHeight());
+		r1.set(player.x - player.width/2,
+				player.y - player.height/2,
+				player.width,
+				player.height);
 
 		// Test collisions Player <--> Item1
 		for (PowerUp item1 : power_ups.getPowerUps()) {
