@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -36,6 +37,7 @@ public class GameScreen implements Screen {
 	private Sprite game_dock;
 	private Sprite cursor;
 	private Sprite player;
+	private ParticleEffect particle_effect;
 
 	private float player_rotation;
 	private float offset_x;
@@ -78,6 +80,11 @@ public class GameScreen implements Screen {
 		player = new Sprite(new Texture("player.bmp"));
 		player.setOrigin(player.getWidth()/2, player.getHeight()/2);
 		player_position = new Vector2(MAP_WIDTH/2, MAP_HEIGHT/2);
+		particle_effect = new ParticleEffect();
+		particle_effect.load(Gdx.files.internal("particles.party"), Gdx.files.internal(""));
+		particle_effect.getEmitters().first().setPosition(player_position.x, player_position.y);
+		//particle_effect.scaleEffect((float) 0.3);
+		particle_effect.start();
 
 		viewport.apply();
 		bitmap_font.getData();
@@ -136,6 +143,7 @@ public class GameScreen implements Screen {
 		// Add displacement moved in one frame (x and y axis)
 		player_position.x -= Math.sin(Math.toRadians(player_rotation))* player_speed;
 		player_position.y += Math.cos(Math.toRadians(player_rotation))* player_speed;
+		particle_effect.setPosition(player_position.x, player_position.y);
 
 		// Implement screen boundaries
 		if (player_position.x < player.getHeight()/2)
@@ -153,6 +161,7 @@ public class GameScreen implements Screen {
 		// Update
 		power_ups.update(delta);
 		test.update(delta, player_position);
+		particle_effect.update(delta);
 		testCollisions();
 		// TODO: EnemyPattern class
 
@@ -168,6 +177,7 @@ public class GameScreen implements Screen {
 		power_ups.render(sprite_batch);
 		test.render(sprite_batch);
 		player.draw(sprite_batch);
+		particle_effect.draw(sprite_batch);
 		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(player_score), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), GAME_DOCK_PADDING + 300, GAME_HEIGHT - GAME_DOCK_PADDING);
 		cursor.draw(sprite_batch);
