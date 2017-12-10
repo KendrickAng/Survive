@@ -13,23 +13,29 @@ public class EnemyPattern {
 
 	private static final int SPAWN_PADDING = 20;
 	private static final int NEXT_MIN_PATTERN = 2;
-	private static final int NEXT_MAX_PATTERN = 3;
+	private static final int NEXT_MAX_PATTERN = 4;
 
 	private static final int PATTERN_2_ENEMIES = 5;
 	private static final float PATTERN_2_SPAWN_INTERVAL = 0.2f;
+
 	private static final int PATTERN_3_ENEMIES = 10;
-	private static final float PATTERN_3_SPAWN_INTERVAL = 0.2f;
+	private static final float PATTERN_3_SPAWN_INTERVAL = 0.1f;
 	private static final int PATTERN_3_SPEED = 50;
+
+	private static final int PATTERN_4_ENEMIES = 8;
+	private static final float PATTERN_4_SPAWN_INTERVAL = 0.1f;
+	private static final int PATTERN_4_SPAWN_DISTANCE = 100;
+	private static final int PATTERN_4_SPEED = 50;
 
 	int pattern;
 	private float x;
-	private float y;
 	private float timer;
 	private int spawned = 0;
 
 	private Sprite sprite;
 	private Array<EnemyPattern> pattern_array;
 	private Array<Enemy> enemy_array;
+	private Vector2 player_position;
 
 	EnemyPattern(Sprite sprite, Array<EnemyPattern> pattern_array, int pattern, float delay) {
 
@@ -38,6 +44,13 @@ public class EnemyPattern {
 		this.pattern = pattern;
 		this.timer = -delay;
 		enemy_array = new Array<Enemy>();
+
+		switch (pattern) {
+
+			case 3:
+				x = SPAWN_PADDING;
+				break;
+		}
 	}
 
 	void next_pattern(float next_timer) {
@@ -55,7 +68,7 @@ public class EnemyPattern {
 	void pattern1(float delta, Vector2 player_position) {
 
 		for (Enemy enemy:enemy_array)
-			enemy.player_chase(delta, player_position);
+			enemy.playerChase(delta, player_position);
 	}
 
 	void pattern2(float delta) {
@@ -66,9 +79,11 @@ public class EnemyPattern {
 
 			if (timer > PATTERN_2_SPAWN_INTERVAL) {
 
-				x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
-				y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
-				enemy_array.add(new Enemy(sprite, x, y));
+				Enemy enemy = new Enemy(sprite);
+				enemy.x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
+				enemy.y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
+
+				enemy_array.add(enemy);
 				spawned ++;
 				timer -= PATTERN_2_SPAWN_INTERVAL;
 			}
@@ -84,15 +99,15 @@ public class EnemyPattern {
 
 		if (spawned < PATTERN_3_ENEMIES) {
 
-			x = SPAWN_PADDING;
-
 			timer += delta;
 
 			if (timer > PATTERN_3_SPAWN_INTERVAL) {
 
-				y = SPAWN_PADDING + (MAP_HEIGHT - SPAWN_PADDING * 2) / (PATTERN_3_ENEMIES - 1) * spawned;
+				Enemy enemy = new Enemy(sprite);
+				enemy.x = x;
+				enemy.y = SPAWN_PADDING + (MAP_HEIGHT - SPAWN_PADDING * 2) / (PATTERN_3_ENEMIES - 1) * spawned;
 
-				enemy_array.add(new Enemy(sprite, x, y));
+				enemy_array.add(enemy);
 				spawned ++;
 				timer -= PATTERN_3_SPAWN_INTERVAL;
 
@@ -104,14 +119,68 @@ public class EnemyPattern {
 
 			x += PATTERN_3_SPEED * delta;
 
-			if (x > MAP_WIDTH - sprite.getWidth()/2) {
-
+			if (x > MAP_WIDTH - sprite.getWidth()/2)
 				transfer_enemy();
-			}
 
 			for (Enemy enemy:enemy_array)
-				enemy.set(x, enemy.y);
+				enemy.x = x;
 		}
+	}
+
+	void pattern4(float delta, Vector2 player_position) {
+
+		timer += delta;
+
+		if (spawned < PATTERN_4_ENEMIES) {
+
+			if (timer > PATTERN_4_SPAWN_INTERVAL) {
+
+				if (this.player_position == null)
+					this.player_position = new Vector2(player_position.x, player_position.y);
+
+				double theta = Math.PI*2/PATTERN_4_ENEMIES * spawned;
+
+				Enemy enemy = new Enemy(sprite);
+				enemy.x = this.player_position.x + (float) Math.sin(theta) * PATTERN_4_SPAWN_DISTANCE;
+				enemy.y = this.player_position.y + (float) Math.cos(theta) * PATTERN_4_SPAWN_DISTANCE;
+				enemy.theta = Math.PI - theta;
+				enemy.speed = PATTERN_4_SPEED;
+
+				enemy_array.add(enemy);
+				spawned ++;
+				timer -= PATTERN_4_SPAWN_INTERVAL;
+
+				if (spawned == PATTERN_4_ENEMIES) {
+
+					timer = -0.5f;
+					next_pattern(2);
+				}
+			}
+
+		} else {
+
+			if (timer > 0) {
+
+				if (timer > PATTERN_4_SPAWN_DISTANCE * 2 / PATTERN_4_SPEED)
+					transfer_enemy();
+
+				for (Enemy enemy : enemy_array)
+					enemy.move(delta);
+			}
+		}
+	}
+
+	void update() {
+
+		for (Enemy enemy:enemy_array)
+			enemy.update();
+	}
+
+	void playerCollision(Vector2 player_position) {
+
+		for (Enemy enemy:enemy_array)
+			if (enemy.playerCollision(player_position))
+				enemy_array.removeValue(enemy, true);
 	}
 
 	void render(SpriteBatch batch) {

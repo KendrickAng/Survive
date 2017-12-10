@@ -40,14 +40,13 @@ public class GameScreen implements Screen, ContactListener {
 	private Sprite game_dock;
 	private Sprite cursor;
 	private Sprite player;
-	private Sprite enemy;
 	private Array<EnemyPattern> pattern_array;
 	private PowerUps power_ups;
 
 	private float player_rotation;
 	private float offset_x;
 	private float offset_y;
-	private int player_score = 12345;
+	private int player_score = 1234567890;
 
 	GameScreen(Survive game) {
 
@@ -77,7 +76,7 @@ public class GameScreen implements Screen, ContactListener {
 		player.setOrigin(player.getWidth()/2, player.getHeight()/2);
 		player_position = new Vector2(MAP_WIDTH/2, MAP_HEIGHT/2);
 
-		enemy = new Sprite(new Texture("enemy.bmp"));
+		Sprite enemy = new Sprite(new Texture("enemy.bmp"));
 		pattern_array = new Array<EnemyPattern>();
 		pattern_array.add(new EnemyPattern(enemy, pattern_array, 1, 0));
 		pattern_array.first().next_pattern(2);
@@ -154,7 +153,7 @@ public class GameScreen implements Screen, ContactListener {
 		// Update
 		power_ups.update(delta);
 
-		for (EnemyPattern pattern: pattern_array) {
+		for (EnemyPattern pattern:pattern_array) {
 
 			switch (pattern.pattern) {
 
@@ -169,7 +168,14 @@ public class GameScreen implements Screen, ContactListener {
 				case 3:
 					pattern.pattern3(delta);
 					break;
+
+				case 4:
+					pattern.pattern4(delta, player_position);
+					break;
 			}
+
+			pattern.update();
+			pattern.playerCollision(player_position);
 		}
 
 		// Clear the screen
@@ -183,7 +189,7 @@ public class GameScreen implements Screen, ContactListener {
 		sprite_batch.enableBlending();
 		power_ups.render(sprite_batch);
 
-		for (EnemyPattern pattern: pattern_array)
+		for (EnemyPattern pattern:pattern_array)
 			pattern.render(sprite_batch);
 
 		player.draw(sprite_batch);
