@@ -11,6 +11,7 @@ public class PowerUp {
 
     private static final float SPEED = 10;
     private static final float ROTATION_SPEED = 1;
+    private static final float SPAWN_PADDING = 50;
 
     private float x;
     private float y;
@@ -26,8 +27,8 @@ public class PowerUp {
         sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
 
         // Spawn within map boundaries
-        x = sprite.getWidth() + (float) Math.random() * (MAP_WIDTH - sprite.getWidth() * 2);
-        y = sprite.getHeight() + (float) Math.random() * (MAP_HEIGHT - sprite.getHeight() * 2);
+        x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
+        y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
 
         // Init Speed & Rotation
         double theta = Math.random() * 2 * Math.PI;

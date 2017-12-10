@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.GAME_HEIGHT;
@@ -39,15 +40,14 @@ public class GameScreen implements Screen, ContactListener {
 	private Sprite game_dock;
 	private Sprite cursor;
 	private Sprite player;
+	private Sprite enemy;
+	private Array<EnemyPattern> pattern_array;
+	private PowerUps power_ups;
 
 	private float player_rotation;
 	private float offset_x;
 	private float offset_y;
 	private int player_score = 12345;
-
-	Enemy test;
-
-	private PowerUps power_ups;
 
 	GameScreen(Survive game) {
 
@@ -77,14 +77,17 @@ public class GameScreen implements Screen, ContactListener {
 		player.setOrigin(player.getWidth()/2, player.getHeight()/2);
 		player_position = new Vector2(MAP_WIDTH/2, MAP_HEIGHT/2);
 
+		enemy = new Sprite(new Texture("enemy.bmp"));
+		pattern_array = new Array<EnemyPattern>();
+		pattern_array.add(new EnemyPattern(enemy, pattern_array, 1, 0));
+		pattern_array.first().next_pattern(2);
+
 		viewport.apply();
 		bitmap_font.getData();
 		power_ups = new PowerUps();
 
 		// Don't restrict cursor to screen boundaries
 		Gdx.input.setCursorCatched(true);
-
-		test = new Enemy(100, 100);
 	}
 
 	@Override
@@ -150,8 +153,24 @@ public class GameScreen implements Screen, ContactListener {
 
 		// Update
 		power_ups.update(delta);
-		test.update(delta, player_position);
-		// TODO: EnemyPattern class
+
+		for (EnemyPattern pattern: pattern_array) {
+
+			switch (pattern.pattern) {
+
+				case 1:
+					pattern.pattern1(delta, player_position);
+					break;
+
+				case 2:
+					pattern.pattern2(delta);
+					break;
+
+				case 3:
+					pattern.pattern3(delta);
+					break;
+			}
+		}
 
 		// Clear the screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -163,7 +182,10 @@ public class GameScreen implements Screen, ContactListener {
 		game_dock.draw(sprite_batch);
 		sprite_batch.enableBlending();
 		power_ups.render(sprite_batch);
-		test.render(sprite_batch);
+
+		for (EnemyPattern pattern: pattern_array)
+			pattern.render(sprite_batch);
+
 		player.draw(sprite_batch);
 		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(player_score), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), GAME_DOCK_PADDING + 300, GAME_HEIGHT - GAME_DOCK_PADDING);
@@ -172,10 +194,7 @@ public class GameScreen implements Screen, ContactListener {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-
-		viewport.update(width, height);
-	}
+	public void resize(int width, int height) {	viewport.update(width, height); }
 
 	@Override
 	public void pause() {}
@@ -190,22 +209,14 @@ public class GameScreen implements Screen, ContactListener {
 	public void dispose() {}
 
 	@Override
-	public void beginContact(Contact contact) {
-
-	}
+	public void beginContact(Contact contact) {}
 
 	@Override
-	public void endContact(Contact contact) {
-
-	}
+	public void endContact(Contact contact) {}
 
 	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-
-	}
+	public void preSolve(Contact contact, Manifold oldManifold) {}
 
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-
-	}
+	public void postSolve(Contact contact, ContactImpulse impulse) {}
 }
