@@ -89,13 +89,14 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		// Keep tracking cursor position, transform screen to world coordinates
+		// TODO: Cursor class
 		cursor_position.set(Gdx.input.getX(), Gdx.input.getY());
 		viewport.unproject(cursor_position);
 		cursor.setPosition(cursor_position.x - cursor.getWidth()/2, cursor_position.y - cursor.getHeight()/2);
 
 		// Update everything
 		power_ups.update(delta);
-		player.cursorOffset(cursor_position);
+		player.updateOffset(cursor_position);
 		player.update(delta);
 		testCollisions();
 

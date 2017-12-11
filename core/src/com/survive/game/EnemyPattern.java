@@ -178,9 +178,13 @@ public class EnemyPattern {
 
 	void playerCollision(Player player) {
 
-		for (Enemy enemy:enemy_array)
-			if (enemy.playerCollision(player))
+		for (Enemy enemy:enemy_array) {
+
+			if (player.hitbox.get(0).intersectCircle(enemy.x, enemy.y, enemy.height/2)) {
+
 				enemy_array.removeValue(enemy, true);
+			}
+		}
 	}
 
 	void render(SpriteBatch batch) {

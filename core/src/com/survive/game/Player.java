@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
@@ -19,6 +20,8 @@ class Player {
 	float y;
 	float height;
 	float width;
+	private double rotation;
+	Array<Line> hitbox;
 
 	private float offset_x = 0;
 	private float offset_y = 0;
@@ -31,12 +34,15 @@ class Player {
 		y = MAP_HEIGHT/2;
 		height = sprite.getHeight();
 		width = sprite.getWidth();
+		rotation = 0;
+		hitbox = new Array<Line>();
+		hitbox.add(new Line(0, 0, 0 ,0));
 
 		sprite.setOrigin(width/2, height/2);
 		this.sprite = sprite;
 	}
 
-	void cursorOffset(Vector2 cursor_position) {
+	void updateOffset(Vector2 cursor_position) {
 
 		// For Android phones (tilting sensor)
 		// TODO: Use RotationVector Sensor
@@ -55,7 +61,7 @@ class Player {
 
 	void update(float delta) {
 
-		double rotation = Math.atan2(offset_x, offset_y);
+		rotation = Math.atan2(offset_x, offset_y);
 		double offset_distance = Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
 
 		if (offset_distance > height/2) {
@@ -83,6 +89,13 @@ class Player {
 
 		if (y > MAP_HEIGHT - height/2)
 			y = MAP_HEIGHT - height/2;
+
+		// Update player hitbox
+		float x1 = x - (float) Math.sin(rotation) * height/2;
+		float y1 = y + (float) Math.cos(rotation) * height/2;
+		float x2 = x + (float) Math.sin(rotation) * height/4;
+		float y2 = y - (float) Math.cos(rotation) * height/4;
+		hitbox.get(0).set(x1, y1, x2, y2);
 
 		// Set player sprite positions
 		sprite.setPosition(x - width /2, y - height /2);
