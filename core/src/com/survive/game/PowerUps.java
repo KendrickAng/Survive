@@ -22,7 +22,7 @@ public class PowerUps {
 
         if (powerup_list.size < MAX_SIZE && MathUtils.random() < delta * SPAWN_RATE) {
 
-            PowerUp new_item = new PowerUp(1);
+            PowerUp new_item = new PowerUp(2);
             powerup_list.add(new_item);
         }
 
