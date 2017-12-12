@@ -35,6 +35,8 @@ class Player {
 		height = sprite.getHeight();
 		width = sprite.getWidth();
 		rotation = 0;
+
+		//Add hit box
 		hitbox = new Array<Line>();
 		hitbox.add(new Line(0, 0, 0 ,0));
 
@@ -61,6 +63,7 @@ class Player {
 
 	void update(float delta) {
 
+		// Re-calculate arc-tangent from north, moving counter-clockwise
 		rotation = Math.atan2(offset_x, offset_y);
 		double offset_distance = Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
 

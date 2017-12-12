@@ -68,7 +68,7 @@ public class GameScreen implements Screen {
 		// Init Player
 		player = new Player(new Sprite(new Texture("player.bmp")));
 
-		// Init Enemy Patterns
+		// Init Enemy Patterns (pattern 1)
 		pattern_array = new Array<EnemyPattern>();
 		pattern_array.add(new EnemyPattern(new Sprite(new Texture("enemy.bmp")), pattern_array, 1, 0));
 		pattern_array.first().next_pattern(2);

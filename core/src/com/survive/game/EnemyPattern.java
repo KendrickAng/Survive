@@ -53,24 +53,28 @@ public class EnemyPattern {
 		}
 	}
 
+	// Finds next enemy pattern randomly (pattern 2 to 4)
 	void next_pattern(float next_timer) {
 
 		int next_pattern = random.nextInt(NEXT_MAX_PATTERN - NEXT_MIN_PATTERN + 1) + NEXT_MIN_PATTERN;
 		pattern_array.add(new EnemyPattern(sprite, pattern_array, next_pattern, next_timer));
 	}
 
+	// Remove CURRENT pattern from array, add THAT pattern's enemies to pattern1
 	private void transfer_enemy() {
 
 		pattern_array.removeValue(this, true);
 		pattern_array.first().enemy_array.addAll(enemy_array);
 	}
 
+	// Enemies chase player
 	void pattern1(float delta, Player player) {
 
 		for (Enemy enemy:enemy_array)
 			enemy.playerChase(delta, player);
 	}
 
+	// Spawn 5 enemies in random positions
 	void pattern2(float delta) {
 
 		if (spawned < PATTERN_2_ENEMIES) {
@@ -87,14 +91,15 @@ public class EnemyPattern {
 				spawned ++;
 				timer -= PATTERN_2_SPAWN_INTERVAL;
 			}
-
 		} else {
 
+			// Move enemies to pattern1 and get new pattern
 			transfer_enemy();
 			next_pattern(1);
 		}
 	}
 
+	// Spawn enemies in vertical line
 	void pattern3(float delta) {
 
 		if (spawned < PATTERN_3_ENEMIES) {
@@ -127,6 +132,7 @@ public class EnemyPattern {
 		}
 	}
 
+	// Spawns enemies in a circle around last player position
 	void pattern4(float delta, Player player) {
 
 		timer += delta;

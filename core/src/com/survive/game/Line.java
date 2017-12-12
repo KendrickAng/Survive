@@ -21,12 +21,15 @@ public class Line {
 		this.x2 = x2;
 		this.y2 = y2;
 
+		// by = ax + c
 		a = -(y1 - y2)/(x1 - x2);
 		c = a * x1 + y1;
 	}
 
+	// (x,y) = coordinates of enemy, r = radius of enemy circle hitbox
 	boolean intersectCircle(float x, float y, float r) {
 
+		// Translate line to
 		this.translate(-x, -y);
 		double discriminant = Math.pow(r, 2) * (Math.pow(a, 2) + 1) - Math.pow(c, 2);
 		boolean o;

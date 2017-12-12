@@ -25,6 +25,7 @@ public class Enemy {
 		this.sprite = sprite;
 	}
 
+	// Add displacement per unit time in x and y direction
 	void move(float delta) {
 
 		x -= Math.sin(theta) * speed * delta;
@@ -39,6 +40,7 @@ public class Enemy {
 		move(delta);
 	}
 
+	// Keep enemies within screen
 	void update() {
 
 		if (x < width/2)
