@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -34,6 +35,7 @@ public class GameScreen implements Screen {
 	private Sprite game_dock;
 	private Sprite cursor;
 	private Player player;
+	private ParticleEffect particle_effect;
 	private Array<EnemyPattern> pattern_array;
 	private PowerUps power_ups;
 
@@ -68,6 +70,13 @@ public class GameScreen implements Screen {
 		// Init Player
 		player = new Player(new Sprite(new Texture("player.bmp")));
 
+		// Init Player Particles
+		particle_effect = new ParticleEffect();
+		particle_effect.load(Gdx.files.internal("particles.party"), Gdx.files.internal(""));
+		//particle_effect.getEmitters().first().setPosition(player.x, player.y);
+		//particle_effect.scaleEffect((float) 0.3);
+		particle_effect.start();
+
 		// Init Enemy Patterns (pattern 1)
 		pattern_array = new Array<EnemyPattern>();
 		pattern_array.add(new EnemyPattern(new Sprite(new Texture("enemy.bmp")), pattern_array, 1, 0));
@@ -98,6 +107,8 @@ public class GameScreen implements Screen {
 		power_ups.update(delta);
 		player.updateOffset(cursor_position);
 		player.update(delta);
+		particle_effect.setPosition(player.x, player.y);
+		particle_effect.update(delta);
 		testCollisions();
 
 		for (EnemyPattern pattern:pattern_array) {
@@ -139,6 +150,7 @@ public class GameScreen implements Screen {
 		for (EnemyPattern pattern:pattern_array)
 			pattern.render(sprite_batch);
 
+		particle_effect.draw(sprite_batch);
 		player.render(sprite_batch);
 		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(SCORE), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), GAME_DOCK_PADDING + 300, GAME_HEIGHT - GAME_DOCK_PADDING);
