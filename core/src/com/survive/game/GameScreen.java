@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
 		bitmap_font = game.bitmap_font;
 		cursor = game.cursor;
 
+		// Add game's gray-blue screen
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.valueOf("#263238"));
         pixmap.drawPixel(0, 0);
@@ -56,6 +57,7 @@ public class GameScreen implements Screen {
 		game_background = new Sprite(new Texture(pixmap));
 		game_background.setSize(MAP_WIDTH, MAP_HEIGHT);
 
+		// Add game HUD
 		pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(Color.valueOf("#1A2226"));
 		pixmap.drawPixel(0, 0);
