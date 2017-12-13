@@ -80,25 +80,25 @@ class Player {
 			y += Math.cos(rotation) * speed * delta;
 		}
 
-		// Player boundaries
-		if (x < height/2)
-			x = height/2;
-
-		if (x > MAP_WIDTH - height/2)
-			x = MAP_WIDTH - height/2;
-
-		if (y < height/2)
-			y = height/2;
-
-		if (y > MAP_HEIGHT - height/2)
-			y = MAP_HEIGHT - height/2;
-
 		// Update player hitbox
 		float x1 = x - (float) Math.sin(rotation) * height/2;
 		float y1 = y + (float) Math.cos(rotation) * height/2;
 		float x2 = x + (float) Math.sin(rotation) * height/4;
 		float y2 = y - (float) Math.cos(rotation) * height/4;
 		hitbox.get(0).set(x1, y1, x2, y2);
+
+		// Player boundaries based on hitbox
+		if (x < Math.max(x - x1, x - x2))
+			x = Math.max(x - x1, x - x2);
+
+		if (x > MAP_WIDTH - Math.max(x1 - x, x2 - x))
+			x = MAP_WIDTH - Math.max(x1 - x, x2 - x);
+
+		if (y < Math.max(y - y1, y - y2))
+			y = Math.max(y - y1, y - y2);
+
+		if (y > MAP_HEIGHT - Math.max(y1 - y, y2 - y))
+			y = MAP_HEIGHT - Math.max(y1 - y, y2 - y);
 
 		// Set player sprite positions
 		sprite.setPosition(x - width /2, y - height /2);
