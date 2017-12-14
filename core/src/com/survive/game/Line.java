@@ -2,12 +2,12 @@ package com.survive.game;
 
 public class Line {
 
-	float x1;
-	float y1;
-	float x2;
-	float y2;
-	float a;
-	float c;
+	private float x1;
+	private float y1;
+	private float x2;
+	private float y2;
+	private float a;
+	private float c;
 
 	Line(float x1, float y1, float x2, float y2) {
 
@@ -26,7 +26,7 @@ public class Line {
 		c = a * x1 + y1;
 	}
 
-	// (x,y) = coordinates of enemy, r = radius of enemy circle hitbox
+	// (x,y) = coordinates of enemy, r = radius of enemy circle hit_box
 	boolean intersectCircle(float x, float y, float r) {
 
 		// Translate line to
@@ -53,7 +53,7 @@ public class Line {
 		return o;
 	}
 
-	void translate(float x, float y) {
+	private void translate(float x, float y) {
 
 		float x1 = this.x1 + x;
 		float y1 = this.y1 + y;

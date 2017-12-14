@@ -2,6 +2,7 @@ package com.survive.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
@@ -14,14 +15,12 @@ public class Enemy {
 	float y;
 	float speed;
 	double theta;
-	float width;
-	float height;
+	private float radius;
 	private Sprite sprite;
 
 	Enemy(Sprite sprite) {
 
-		width = sprite.getWidth();
-		height = sprite.getHeight();
+		radius = sprite.getWidth()/2;
 		this.sprite = sprite;
 	}
 
@@ -40,25 +39,31 @@ public class Enemy {
 		move(delta);
 	}
 
-	// Keep enemies within screen
 	void update() {
 
-		if (x < width/2)
-			x = width/2;
+		// Keep enemy within screen
+		if (x < radius)
+			x = radius;
 
-		if (x > MAP_WIDTH - width/2)
-			x = MAP_WIDTH - width/2;
+		if (x > MAP_WIDTH - radius)
+			x = MAP_WIDTH - radius;
 
-		if (y < height/2)
-			y = height/2;
+		if (y < radius)
+			y = radius;
 
-		if (y > MAP_HEIGHT - height/2)
-			y = MAP_HEIGHT - height/2;
+		if (y > MAP_HEIGHT - radius)
+			y = MAP_HEIGHT - radius;
+	}
+
+	void playerHitTest(Player player, Array<Enemy> enemy_array) {
+
+		if (player.hit_box.get(0).intersectCircle(x, y, radius))
+			enemy_array.removeValue(this, true);
 	}
 
 	void render(SpriteBatch batch) {
 
-		sprite.setPosition(x - width/2, y - height/2);
+		sprite.setPosition(x - radius, y - radius);
 		sprite.draw(batch);
 	}
 }

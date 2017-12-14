@@ -1,8 +1,8 @@
 package com.survive.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
@@ -15,17 +15,14 @@ public class PowerUp {
 
     private float x;
     private float y;
+    private float radius;
     private double rotation;
     private double rotation_speed;
     private double x_speed;
     private double y_speed;
-    private boolean collected;
     private Sprite sprite;
 
-    PowerUp(int type) {
-
-        // Load texture based on type
-        sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
+    PowerUp(Sprite sprite) {
 
         // Spawn within map boundaries
         x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
@@ -41,41 +38,34 @@ public class PowerUp {
         x_speed = Math.sin(theta) * speed;
         y_speed = Math.cos(theta) * speed;
 
-        collected = false;
+        this.sprite = sprite;
+        this.radius = sprite.getHeight()/2;
     }
 
-    public void update(float delta) {
+    void update(float delta) {
 
         x -= x_speed * delta;
         y += y_speed * delta;
         rotation += rotation_speed * delta;
 
         // Bounce on map boundaries
-        if (x < sprite.getWidth()/2 || x > MAP_WIDTH - sprite.getWidth()/2)
+        if (x < radius || x > MAP_WIDTH - radius)
             x_speed = -x_speed;
 
-        else if (y < sprite.getHeight()/2 || y > MAP_HEIGHT - sprite.getHeight()/2)
+        else if (y < radius || y > MAP_HEIGHT - radius)
             y_speed = -y_speed;
-
-        // Render
-        sprite.setRotation((float) Math.toDegrees(rotation));
-        sprite.setPosition(x - sprite.getWidth()/2, y - sprite.getHeight()/2);
     }
 
-    public void render(SpriteBatch batch)  {
+	void playerHitTest(Player player, Array<PowerUp> power_up_array) {
 
-        if (collected) return;
+		if (player.hit_box.get(0).intersectCircle(x, y, radius))
+			power_up_array.removeValue(this, true);
+	}
 
+    void render(SpriteBatch batch)  {
+
+		sprite.setRotation((float) Math.toDegrees(rotation));
+		sprite.setPosition(x - radius, y - radius);
         sprite.draw(batch);
     }
-
-    public float getX() {return x;}
-
-    public float getY() {return y;}
-
-    public Sprite getSprite() {return sprite;}
-
-    public void setCollected(boolean bool) {collected = bool;}
-
-    public boolean getCollected() {return collected;}
 }

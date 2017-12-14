@@ -18,15 +18,14 @@ class Player {
 
 	float x;
 	float y;
-	float height;
-	float width;
+	private float height;
+	private float width;
 	private double rotation;
-	Array<Line> hitbox;
-
 	private float offset_x = 0;
 	private float offset_y = 0;
-
 	private Sprite sprite;
+
+	Array<Line> hit_box;
 
 	Player(Sprite sprite) {
 
@@ -37,8 +36,8 @@ class Player {
 		rotation = 0;
 
 		//Add hit box
-		hitbox = new Array<Line>();
-		hitbox.add(new Line(0, 0, 0 ,0));
+		hit_box = new Array<Line>();
+		hit_box.add(new Line(0, 0, 0 ,0));
 
 		sprite.setOrigin(width/2, height/2);
 		this.sprite = sprite;
@@ -80,14 +79,14 @@ class Player {
 			y += Math.cos(rotation) * speed * delta;
 		}
 
-		// Update player hitbox
+		// Update player hit_box
 		float x1 = x - (float) Math.sin(rotation) * height/2;
 		float y1 = y + (float) Math.cos(rotation) * height/2;
 		float x2 = x + (float) Math.sin(rotation) * height/4;
 		float y2 = y - (float) Math.cos(rotation) * height/4;
-		hitbox.get(0).set(x1, y1, x2, y2);
+		hit_box.get(0).set(x1, y1, x2, y2);
 
-		// Player boundaries based on hitbox
+		// Player boundaries based on hit_box
 		if (x < Math.max(x - x1, x - x2))
 			x = Math.max(x - x1, x - x2);
 
