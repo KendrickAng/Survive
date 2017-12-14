@@ -1,8 +1,8 @@
 package com.survive.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.POWER_UP_TYPE_COUNT;
@@ -18,13 +18,17 @@ public class PowerUpType {
     private float spawn_interval;
     private Sprite sprite;
     private Array<PowerUp> power_up_array;
+	private Animation<TextureRegion> animation;
 
-    PowerUpType(int type) {
+	PowerUpType(int type) {
 
     	timer = 0;
     	spawn_interval = 0;
 		power_up_array = new Array<PowerUp>();
+
 		sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
+		TextureAtlas bomb_atlas = new TextureAtlas(Gdx.files.internal("bomb.atlas"));
+		animation = new Animation<TextureRegion>(0.033f, bomb_atlas.findRegions("Explosion"));
 
 		min_spawn_interval = POWER_UP_TYPE_MIN_SPAWN_INTERVAL.get(type);
 		max_spawn_interval = POWER_UP_TYPE_MAX_SPAWN_INTERVAL.get(type);
@@ -43,17 +47,18 @@ public class PowerUpType {
 
     		if (timer > spawn_interval) {
 
-				power_up_array.add(new PowerUp(sprite));
+				power_up_array.add(new PowerUp(sprite, animation));
 				timer = 0;
 				spawn_interval = 0;
 			}
 		}
 
-        for (PowerUp power_up : power_up_array)
-        	power_up.update(delta);
+        for (PowerUp power_up : power_up_array) {
 
-		for (PowerUp power_up : power_up_array)
-			power_up.playerHitTest(player, power_up_array);
+			power_up.update(delta);
+			power_up.playerHitTest(player);
+			power_up.dispose(power_up_array);
+		}
     }
 
     void render(SpriteBatch batch) {

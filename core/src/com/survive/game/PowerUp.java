@@ -1,7 +1,9 @@
 package com.survive.game;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
@@ -20,9 +22,12 @@ public class PowerUp {
     private double rotation_speed;
     private double x_speed;
     private double y_speed;
+    private float animation_time;
+    private boolean inactive;
     private Sprite sprite;
+    private Animation<TextureRegion> animation;
 
-    PowerUp(Sprite sprite) {
+    PowerUp(Sprite sprite, Animation<TextureRegion> animation) {
 
         // Spawn within map boundaries
         x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
@@ -31,41 +36,64 @@ public class PowerUp {
         // Init Speed & Rotation
         double theta = Math.random() * 2 * Math.PI;
         double speed = Math.random() * SPEED;
-
         rotation = theta;
         rotation_speed = Math.random() * ROTATION_SPEED;
-
         x_speed = Math.sin(theta) * speed;
         y_speed = Math.cos(theta) * speed;
 
+        animation_time = 0;
+        inactive = true;
+
         this.sprite = sprite;
+        this.animation = animation;
         this.radius = sprite.getHeight()/2;
     }
 
     void update(float delta) {
 
-        x -= x_speed * delta;
-        y += y_speed * delta;
-        rotation += rotation_speed * delta;
+    	if (inactive) {
 
-        // Bounce on map boundaries
-        if (x < radius || x > MAP_WIDTH - radius)
-            x_speed = -x_speed;
+			x -= x_speed * delta;
+			y += y_speed * delta;
+			rotation += rotation_speed * delta;
 
-        else if (y < radius || y > MAP_HEIGHT - radius)
-            y_speed = -y_speed;
+			// Bounce on map boundaries
+			if (x < radius || x > MAP_WIDTH - radius)
+				x_speed = -x_speed;
+
+			else if (y < radius || y > MAP_HEIGHT - radius)
+				y_speed = -y_speed;
+
+		} else {
+
+    		animation_time += delta;
+		}
     }
 
-	void playerHitTest(Player player, Array<PowerUp> power_up_array) {
+	void playerHitTest(Player player) {
 
 		if (player.hit_box.get(0).intersectCircle(x, y, radius))
-			power_up_array.removeValue(this, true);
+			inactive = false;
 	}
 
     void render(SpriteBatch batch)  {
 
-		sprite.setRotation((float) Math.toDegrees(rotation));
-		sprite.setPosition(x - radius, y - radius);
-        sprite.draw(batch);
+    	if (inactive) {
+
+    		sprite.setRotation((float) Math.toDegrees(rotation));
+			sprite.setPosition(x - radius, y - radius);
+			sprite.draw(batch);
+
+		} else {
+
+			TextureRegion keyFrame = animation.getKeyFrame(animation_time, false);
+			batch.draw(keyFrame, x - keyFrame.getRegionWidth()/2, y - keyFrame.getRegionHeight()/2);
+    	}
     }
+
+    void dispose(Array<PowerUp> power_up_array) {
+
+		if (animation_time > animation.getAnimationDuration())
+			power_up_array.removeValue(this, true);
+	}
 }

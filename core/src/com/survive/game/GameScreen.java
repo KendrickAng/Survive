@@ -84,7 +84,7 @@ public class GameScreen implements Screen {
 		for (int i = 0; i < 2; i ++)
 			power_up_types.add(new PowerUpType(i));
 
-		// Init Enemy Patterns (pattern 1)
+		// Init Enemy Patterns
 		pattern_array = new Array<EnemyPattern>();
 		pattern_array.add(new EnemyPattern(new Sprite(new Texture("enemy.bmp")), pattern_array, 0, 0));
 		pattern_array.first().newPattern(2);
@@ -129,11 +129,11 @@ public class GameScreen implements Screen {
 		sprite_batch.draw(GAME_COLOR.get(1), 0, MAP_HEIGHT, MAP_WIDTH, DOCK_HEIGHT);
 		sprite_batch.enableBlending();
 
-		for (PowerUpType power_up_type:power_up_types)
-			power_up_type.render(sprite_batch);
-
 		for (EnemyPattern pattern:pattern_array)
 			pattern.render(sprite_batch);
+
+		for (PowerUpType power_up_type:power_up_types)
+			power_up_type.render(sprite_batch);
 
 		player.render(sprite_batch);
 		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(SCORE), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
