@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -37,6 +35,10 @@ public class GameScreen implements Screen {
 	//private ParticleEffect particle_effect;
 	private Array<EnemyPattern> pattern_array;
 	private PowerUps power_ups;
+
+	private Animation<TextureRegion> bomb_animation;
+	private TextureAtlas bomb_atlas;
+	float elapsed_time = 0.0f;
 
 	// For collision detection
 	private Rectangle r1 = new Rectangle();
@@ -70,6 +72,10 @@ public class GameScreen implements Screen {
 
 		// Init Player
 		player = new Player(new Sprite(new Texture("player.bmp")));
+
+		// Init Powerup textures
+		bomb_atlas = new TextureAtlas(Gdx.files.internal("bomb.atlas"));
+		bomb_animation = new Animation<TextureRegion>(0.033f, bomb_atlas.findRegions("Explosion"));
 
 		// Init Player Particles
 		/*
@@ -114,7 +120,6 @@ public class GameScreen implements Screen {
 		particle_effect.setPosition(player.x, player.y);
 		particle_effect.update(delta);
 		*/
-		testCollisions();
 
 		for (EnemyPattern pattern:pattern_array) {
 
@@ -155,6 +160,17 @@ public class GameScreen implements Screen {
 		for (EnemyPattern pattern:pattern_array)
 			pattern.render(sprite_batch);
 
+		testCollisions();
+
+		for (PowerUp item1 : power_ups.getPowerUps()) {
+
+			if(item1.getTriggered()) {
+
+				elapsed_time += delta;
+				sprite_batch.draw(bomb_animation.getKeyFrame(elapsed_time, false), 200, 200);
+			}
+		}
+
 		//particle_effect.draw(sprite_batch);
 		player.render(sprite_batch);
 		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(SCORE), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
@@ -166,10 +182,14 @@ public class GameScreen implements Screen {
 	private void onCollisionPlayerWithItem(PowerUp power_up) {
 
 		power_up.setCollected(true);
+		power_up.setTriggered(true);
 		Gdx.app.log("Item", "Item collected!");
 	}
 
 	private void testCollisions() {
+
+		float item_x;
+		float item_y;
 
 		// Set hitboxes
 		r1.set(player.x - player.width/2,
@@ -182,15 +202,30 @@ public class GameScreen implements Screen {
 
 			if(item1.getCollected()) continue;
 
-			r2.set(item1.getX() - item1.getSprite().getWidth()/2,
-					item1.getY() - item1.getSprite().getHeight()/2,
+			item_x = item1.getX();
+			item_y = item1.getY();
+
+			r2.set(item_x - item1.getSprite().getWidth()/2,
+					item_y - item1.getSprite().getHeight()/2,
 					item1.getSprite().getWidth(),
 					item1.getSprite().getHeight());
 
 			if(!r1.overlaps(r2)) continue;
-
 			onCollisionPlayerWithItem(item1);
+
 			break;
+		}
+	}
+
+	private void Animate(float delta, float x, float y) {
+
+		float elapsed_time = 0.0f;
+		elapsed_time += delta;
+
+		if(!bomb_animation.isAnimationFinished(elapsed_time)) {
+			sprite_batch.begin();
+			sprite_batch.draw(bomb_animation.getKeyFrame(elapsed_time, false), x, y);
+			sprite_batch.end();
 		}
 	}
 
@@ -207,5 +242,5 @@ public class GameScreen implements Screen {
 	public void hide() {}
 
 	@Override
-	public void dispose() {}
+	public void dispose() { bomb_atlas.dispose(); }
 }

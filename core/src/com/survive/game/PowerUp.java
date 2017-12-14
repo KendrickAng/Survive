@@ -20,6 +20,7 @@ public class PowerUp {
     private double x_speed;
     private double y_speed;
     private boolean collected;
+    private boolean triggered;
     private Sprite sprite;
 
     PowerUp(int type) {
@@ -75,7 +76,11 @@ public class PowerUp {
 
     public Sprite getSprite() {return sprite;}
 
-    public void setCollected(boolean bool) {collected = bool;}
+    public void setCollected(boolean b) {collected = b;}
 
     public boolean getCollected() {return collected;}
+
+    public void setTriggered(boolean b) { triggered = b; }
+
+    public boolean getTriggered() {return triggered;}
 }
