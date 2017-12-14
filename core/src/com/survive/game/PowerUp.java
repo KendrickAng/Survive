@@ -23,15 +23,18 @@ public class PowerUp {
     private double x_speed;
     private double y_speed;
     private float animation_time;
-    private boolean inactive;
     private Sprite sprite;
     private Animation<TextureRegion> animation;
 
-    PowerUp(Sprite sprite, Animation<TextureRegion> animation) {
+	boolean triggered;
+	Circle hit_box;
+
+	PowerUp(Sprite sprite, Animation<TextureRegion> animation) {
 
         // Spawn within map boundaries
         x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
         y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
+		radius = sprite.getWidth()/2;
 
         // Init Speed & Rotation
         double theta = Math.random() * 2 * Math.PI;
@@ -42,16 +45,21 @@ public class PowerUp {
         y_speed = Math.cos(theta) * speed;
 
         animation_time = 0;
-        inactive = true;
+        triggered = false;
+		hit_box = new Circle(0, 0, 0);
 
         this.sprite = sprite;
         this.animation = animation;
-        this.radius = sprite.getHeight()/2;
     }
 
     void update(float delta) {
 
-    	if (inactive) {
+    	if (triggered) {
+
+			animation_time += delta;
+			radius = animation.getKeyFrame(animation_time, false).getRegionWidth() / 2;
+
+		} else {
 
 			x -= x_speed * delta;
 			y += y_speed * delta;
@@ -63,31 +71,28 @@ public class PowerUp {
 
 			else if (y < radius || y > MAP_HEIGHT - radius)
 				y_speed = -y_speed;
-
-		} else {
-
-    		animation_time += delta;
 		}
+
+		hit_box.set(x, y, radius);
     }
 
 	void playerHitTest(Player player) {
 
-		if (player.hit_box.get(0).intersectCircle(x, y, radius))
-			inactive = false;
+		if (!triggered && player.hit_box.intersectCircle(hit_box))
+			triggered = true;
 	}
 
     void render(SpriteBatch batch)  {
 
-    	if (inactive) {
+    	if (triggered) {
+
+    		batch.draw(animation.getKeyFrame(animation_time, false), x - radius, y - radius);
+
+		} else {
 
     		sprite.setRotation((float) Math.toDegrees(rotation));
 			sprite.setPosition(x - radius, y - radius);
 			sprite.draw(batch);
-
-		} else {
-
-			TextureRegion keyFrame = animation.getKeyFrame(animation_time, false);
-			batch.draw(keyFrame, x - keyFrame.getRegionWidth()/2, y - keyFrame.getRegionHeight()/2);
     	}
     }
 

@@ -42,7 +42,7 @@ public class EnemyPattern {
 		}
 	}
 
-	// Start next enemy pattern randomly (pattern 2 to 4)
+	// Start next enemy pattern randomly
 	void newPattern(float next_timer) {
 
 		int next_pattern = random.nextInt(NEXT_MAX_PATTERN - NEXT_MIN_PATTERN + 1) + NEXT_MIN_PATTERN;
@@ -56,7 +56,7 @@ public class EnemyPattern {
 		pattern_array.first().enemy_array.addAll(enemy_array);
 	}
 
-	void update(float delta, Player player) {
+	void update(float delta, Player player, Array<PowerUpType> power_up_types) {
 
 		switch(pattern) {
 
@@ -167,11 +167,12 @@ public class EnemyPattern {
 				break;
 		}
 
-		for (Enemy enemy:enemy_array)
-			enemy.update();
+		for (Enemy enemy:enemy_array) {
 
-		for (Enemy enemy:enemy_array)
+			enemy.update();
 			enemy.playerHitTest(player, enemy_array);
+			enemy.powerUpHitTest(power_up_types, enemy_array);
+		}
 	}
 
 	void render(SpriteBatch batch) {

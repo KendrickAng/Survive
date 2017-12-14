@@ -117,7 +117,7 @@ public class GameScreen implements Screen {
 			power_up_type.update(delta, player);
 
 		for (EnemyPattern pattern:pattern_array)
-			pattern.update(delta, player);
+			pattern.update(delta, player, power_up_types);
 
 		// Clear the screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -129,11 +129,11 @@ public class GameScreen implements Screen {
 		sprite_batch.draw(GAME_COLOR.get(1), 0, MAP_HEIGHT, MAP_WIDTH, DOCK_HEIGHT);
 		sprite_batch.enableBlending();
 
-		for (EnemyPattern pattern:pattern_array)
-			pattern.render(sprite_batch);
-
 		for (PowerUpType power_up_type:power_up_types)
 			power_up_type.render(sprite_batch);
+
+		for (EnemyPattern pattern:pattern_array)
+			pattern.render(sprite_batch);
 
 		player.render(sprite_batch);
 		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(SCORE), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);

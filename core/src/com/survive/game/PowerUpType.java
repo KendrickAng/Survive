@@ -17,8 +17,9 @@ public class PowerUpType {
 	private int min_spawn_interval;
     private float spawn_interval;
     private Sprite sprite;
-    private Array<PowerUp> power_up_array;
 	private Animation<TextureRegion> animation;
+
+	Array<PowerUp> power_up_array;
 
 	PowerUpType(int type) {
 
@@ -27,8 +28,8 @@ public class PowerUpType {
 		power_up_array = new Array<PowerUp>();
 
 		sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
-		TextureAtlas bomb_atlas = new TextureAtlas(Gdx.files.internal("bomb.atlas"));
-		animation = new Animation<TextureRegion>(0.033f, bomb_atlas.findRegions("Explosion"));
+		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("power_up_0_animation.atlas"));
+		animation = new Animation<TextureRegion>(0.033f, atlas.findRegions("Explosion"));
 
 		min_spawn_interval = POWER_UP_TYPE_MIN_SPAWN_INTERVAL.get(type);
 		max_spawn_interval = POWER_UP_TYPE_MAX_SPAWN_INTERVAL.get(type);

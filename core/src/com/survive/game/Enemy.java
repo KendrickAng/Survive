@@ -17,10 +17,12 @@ public class Enemy {
 	double theta;
 	private float radius;
 	private Sprite sprite;
+	private Circle hit_box;
 
 	Enemy(Sprite sprite) {
 
 		radius = sprite.getWidth()/2;
+		hit_box = new Circle(0, 0, 0);
 		this.sprite = sprite;
 	}
 
@@ -53,12 +55,22 @@ public class Enemy {
 
 		if (y > MAP_HEIGHT - radius)
 			y = MAP_HEIGHT - radius;
+
+		hit_box.set(x, y, radius);
 	}
 
 	void playerHitTest(Player player, Array<Enemy> enemy_array) {
 
-		if (player.hit_box.get(0).intersectCircle(x, y, radius))
+		if (player.hit_box.intersectCircle(hit_box))
 			enemy_array.removeValue(this, true);
+	}
+
+	void powerUpHitTest(Array<PowerUpType> power_up_types, Array<Enemy> enemy_array) {
+
+		for (PowerUpType power_up_type:power_up_types)
+			for (PowerUp power_up:power_up_type.power_up_array)
+				if (power_up.triggered && power_up.hit_box.intersectCircle(hit_box))
+					enemy_array.removeValue(this, true);
 	}
 
 	void render(SpriteBatch batch) {

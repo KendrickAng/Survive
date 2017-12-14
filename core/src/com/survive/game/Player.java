@@ -25,7 +25,7 @@ class Player {
 	private float offset_y = 0;
 	private Sprite sprite;
 
-	Array<Line> hit_box;
+	Line hit_box;
 
 	Player(Sprite sprite) {
 
@@ -35,9 +35,8 @@ class Player {
 		width = sprite.getWidth();
 		rotation = 0;
 
-		//Add hit box
-		hit_box = new Array<Line>();
-		hit_box.add(new Line(0, 0, 0 ,0));
+		// Add hit box
+		hit_box = new Line(0, 0, 0, 0);
 
 		sprite.setOrigin(width/2, height/2);
 		this.sprite = sprite;
@@ -84,7 +83,7 @@ class Player {
 		float y1 = y + (float) Math.cos(rotation) * height/2;
 		float x2 = x + (float) Math.sin(rotation) * height/4;
 		float y2 = y - (float) Math.cos(rotation) * height/4;
-		hit_box.get(0).set(x1, y1, x2, y2);
+		hit_box.set(x1, y1, x2, y2);
 
 		// Player boundaries based on hit_box
 		if (x < Math.max(x - x1, x - x2))

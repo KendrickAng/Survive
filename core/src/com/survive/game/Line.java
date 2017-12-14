@@ -26,12 +26,12 @@ public class Line {
 		c = a * x1 + y1;
 	}
 
-	// (x,y) = coordinates of enemy, r = radius of enemy circle hit_box
-	boolean intersectCircle(float x, float y, float r) {
+	// (x,y) = coordinates of enemy, r = radius of enemy circle
+	boolean intersectCircle(Circle circle) {
 
 		// Translate line to
-		this.translate(-x, -y);
-		double discriminant = Math.pow(r, 2) * (Math.pow(a, 2) + 1) - Math.pow(c, 2);
+		this.translate(-circle.x, -circle.y);
+		double discriminant = Math.pow(circle.radius, 2) * (Math.pow(a, 2) + 1) - Math.pow(c, 2);
 		boolean o;
 
 		if (discriminant >= 0) {
@@ -49,7 +49,7 @@ public class Line {
 			o = false;
 		}
 
-		this.translate(x, y);
+		this.translate(circle.x, circle.y);
 		return o;
 	}
 
