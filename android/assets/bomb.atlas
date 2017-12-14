@@ -1,0 +1,173 @@
+
+bomb.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Explosion
+  rotate: false
+  xy: 1, 409
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 1
+Explosion
+  rotate: false
+  xy: 1, 409
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 24
+Explosion
+  rotate: false
+  xy: 1, 307
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 10
+Explosion
+  rotate: false
+  xy: 103, 409
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 11
+Explosion
+  rotate: false
+  xy: 1, 205
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 12
+Explosion
+  rotate: false
+  xy: 103, 307
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 13
+Explosion
+  rotate: false
+  xy: 205, 409
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 14
+Explosion
+  rotate: false
+  xy: 1, 103
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 15
+Explosion
+  rotate: false
+  xy: 103, 205
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 16
+Explosion
+  rotate: false
+  xy: 205, 307
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 17
+Explosion
+  rotate: false
+  xy: 307, 409
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 18
+Explosion
+  rotate: false
+  xy: 1, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 19
+Explosion
+  rotate: false
+  xy: 103, 103
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 2
+Explosion
+  rotate: false
+  xy: 205, 205
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 20
+Explosion
+  rotate: false
+  xy: 307, 307
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 21
+Explosion
+  rotate: false
+  xy: 409, 409
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 22
+Explosion
+  rotate: false
+  xy: 103, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 23
+Explosion
+  rotate: false
+  xy: 205, 103
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 3
+Explosion
+  rotate: false
+  xy: 307, 205
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 4
+Explosion
+  rotate: false
+  xy: 409, 307
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 5
+Explosion
+  rotate: false
+  xy: 205, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 6
+Explosion
+  rotate: false
+  xy: 307, 103
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 7
+Explosion
+  rotate: false
+  xy: 409, 205
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 8
+Explosion
+  rotate: false
+  xy: 307, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 9
