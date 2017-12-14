@@ -217,18 +217,6 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private void Animate(float delta, float x, float y) {
-
-		float elapsed_time = 0.0f;
-		elapsed_time += delta;
-
-		if(!bomb_animation.isAnimationFinished(elapsed_time)) {
-			sprite_batch.begin();
-			sprite_batch.draw(bomb_animation.getKeyFrame(elapsed_time, false), x, y);
-			sprite_batch.end();
-		}
-	}
-
 	@Override
 	public void resize(int width, int height) { viewport.update(width, height); }
 
