@@ -19,7 +19,6 @@ public class GameScreen implements Screen {
 
 	private static final int GAME_DOCK_PADDING = 10;
 	private static final int DOCK_HEIGHT = 14 + GAME_DOCK_PADDING * 2;
-	private static final int SCORE = 1234567890;
 
 	static final int MAP_HEIGHT = GAME_HEIGHT - DOCK_HEIGHT;
 	static final int MAP_WIDTH = GAME_WIDTH;
@@ -59,18 +58,21 @@ public class GameScreen implements Screen {
 	}
 
 	private Viewport viewport;
-	private Vector2 cursor_position;
 	private SpriteBatch sprite_batch;
 	private BitmapFont bitmap_font;
-	private Sprite cursor;
-	private Player player;
+	private Cursor cursor;
 	private Array<EnemyPattern> pattern_array;
-	private Array<PowerUpType> power_up_types;
+	private Survive game;
+
+	float delta;
+	Player player;
+	Array<PowerUpType> power_up_types;
 
 	GameScreen(Survive game) {
 
+		this.game = game;
+
 		viewport = game.viewport;
-		cursor_position = game.cursor_position;
 		sprite_batch = game.sprite_batch;
 		bitmap_font = game.bitmap_font;
 		cursor = game.cursor;
@@ -103,26 +105,20 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		// Keep tracking cursor position, transform screen to world coordinates
-		// TODO: Cursor class
-		cursor_position.set(Gdx.input.getX(), Gdx.input.getY());
-		viewport.unproject(cursor_position);
-		cursor.setPosition(cursor_position.x - cursor.getWidth()/2, cursor_position.y - cursor.getHeight()/2);
+		this.delta = delta;
 
-		// Update everything
-		player.updateOffset(cursor_position);
-		player.update(delta);
+		// Update
+		cursor.update(game);
+		player.update(game, this);
 
 		for (PowerUpType power_up_type:power_up_types)
 			power_up_type.update(delta, player);
 
 		for (EnemyPattern pattern:pattern_array)
-			pattern.update(delta, player, power_up_types);
+			pattern.update(this);
 
-		// Clear the screen
+		// Render
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		// Render everything
 		sprite_batch.begin();
 		sprite_batch.disableBlending();
 		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, MAP_WIDTH, MAP_HEIGHT);
@@ -136,9 +132,9 @@ public class GameScreen implements Screen {
 			pattern.render(sprite_batch);
 
 		player.render(sprite_batch);
-		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(SCORE), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
+		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(player.score), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), GAME_DOCK_PADDING + 300, GAME_HEIGHT - GAME_DOCK_PADDING);
-		cursor.draw(sprite_batch);
+		cursor.render(sprite_batch);
 		sprite_batch.end();
 	}
 

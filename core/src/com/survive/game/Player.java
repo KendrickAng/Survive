@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
@@ -15,6 +13,7 @@ class Player {
 	private static final int GYROSCOPE_SENSITIVITY = 5;
 	private static final int SPEED_SENSITIVITY = 10;
 	private static final int MAX_SPEED = 500;
+	private static final int KILLS_MULTIPLIER = 10;
 
 	float x;
 	float y;
@@ -23,8 +22,12 @@ class Player {
 	private double rotation;
 	private float offset_x = 0;
 	private float offset_y = 0;
+	int score;
+	int kills;
+	float time_alive;
 	private Sprite sprite;
 
+	boolean dead;
 	Line hit_box;
 
 	Player(Sprite sprite) {
@@ -34,6 +37,10 @@ class Player {
 		height = sprite.getHeight();
 		width = sprite.getWidth();
 		rotation = 0;
+		score = 0;
+		kills = 0;
+		time_alive = 0;
+		dead = false;
 
 		// Add hit box
 		hit_box = new Line(0, 0, 0, 0);
@@ -42,7 +49,13 @@ class Player {
 		this.sprite = sprite;
 	}
 
-	void updateOffset(Vector2 cursor_position) {
+	void update(Survive game, GameScreen screen) {
+
+		if (dead)
+			game.setScreen(new GameOverScreen(game, screen));
+
+		time_alive += screen.delta;
+		score = kills * KILLS_MULTIPLIER + (int) time_alive;
 
 		// For Android phones (tilting sensor)
 		// TODO: Use RotationVector Sensor
@@ -54,12 +67,9 @@ class Player {
 		} else {
 
 			// Find cursor-player distance and angle from x-axis
-			offset_x = x - cursor_position.x;
-			offset_y = cursor_position.y - y;
+			offset_x = x - game.cursor.position.x;
+			offset_y = game.cursor.position.y - y;
 		}
-	}
-
-	void update(float delta) {
 
 		// Re-calculate arc-tangent from north, moving counter-clockwise
 		rotation = Math.atan2(offset_x, offset_y);
@@ -74,8 +84,8 @@ class Player {
 				speed = MAX_SPEED;
 
 			// Add displacement moved in one frame (x and y axis)
-			x -= Math.sin(rotation) * speed * delta;
-			y += Math.cos(rotation) * speed * delta;
+			x -= Math.sin(rotation) * speed * screen.delta;
+			y += Math.cos(rotation) * speed * screen.delta;
 		}
 
 		// Update player hit_box
@@ -97,14 +107,13 @@ class Player {
 
 		if (y > MAP_HEIGHT - Math.max(y1 - y, y2 - y))
 			y = MAP_HEIGHT - Math.max(y1 - y, y2 - y);
+	}
+
+	void render(SpriteBatch sprite_batch) {
 
 		// Set player sprite positions
 		sprite.setPosition(x - width /2, y - height /2);
 		sprite.setRotation((float) Math.toDegrees(rotation));
-	}
-
-	void render(SpriteBatch batch) {
-
-		sprite.draw(batch);
+		sprite.draw(sprite_batch);
 	}
 }

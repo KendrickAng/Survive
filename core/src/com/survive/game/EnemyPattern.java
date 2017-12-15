@@ -56,21 +56,21 @@ public class EnemyPattern {
 		pattern_array.first().enemy_array.addAll(enemy_array);
 	}
 
-	void update(float delta, Player player, Array<PowerUpType> power_up_types) {
+	void update(GameScreen screen) {
 
 		switch(pattern) {
 
 			case 0: // Enemies chase player
 
 				for (Enemy enemy : enemy_array)
-					enemy.playerChase(delta, player);
+					enemy.playerChase(screen.delta, screen.player);
 
 				break;
 			case 1: // Spawn 5 enemies in random positions
 
 				if (spawned < ENEMY_PATTERN_COUNT.get(pattern)) {
 
-					timer += delta;
+					timer += screen.delta;
 
 					if (timer > ENEMY_PATTERN_SPAWN_INTERVAL.get(pattern)) {
 
@@ -94,7 +94,7 @@ public class EnemyPattern {
 
 				if (spawned < ENEMY_PATTERN_COUNT.get(pattern)) {
 
-					timer += delta;
+					timer += screen.delta;
 
 					if (timer > ENEMY_PATTERN_SPAWN_INTERVAL.get(pattern)) {
 
@@ -112,7 +112,7 @@ public class EnemyPattern {
 
 				} else {
 
-					x += ENEMY_PATTERN_SPEED.get(pattern) * delta;
+					x += ENEMY_PATTERN_SPEED.get(pattern) * screen.delta;
 
 					if (x > MAP_WIDTH - sprite.getWidth()/2)
 						chasePlayer();
@@ -124,14 +124,14 @@ public class EnemyPattern {
 				break;
 			case 3: // Spawns enemies in a circle around last player position
 
-				timer += delta;
+				timer += screen.delta;
 
 				if (spawned < ENEMY_PATTERN_COUNT.get(pattern)) {
 
 					if (timer > ENEMY_PATTERN_SPAWN_INTERVAL.get(pattern)) {
 
 						if (this.player_position == null)
-							this.player_position = new Vector2(player.x, player.y);
+							this.player_position = new Vector2(screen.player.x, screen.player.y);
 
 						double theta = Math.PI*2/ENEMY_PATTERN_COUNT.get(pattern) * spawned;
 
@@ -160,7 +160,7 @@ public class EnemyPattern {
 							chasePlayer();
 
 						for (Enemy enemy : enemy_array)
-							enemy.move(delta);
+							enemy.move(screen.delta);
 					}
 				}
 
@@ -170,8 +170,8 @@ public class EnemyPattern {
 		for (Enemy enemy:enemy_array) {
 
 			enemy.update();
-			enemy.playerHitTest(player, enemy_array);
-			enemy.powerUpHitTest(power_up_types, enemy_array);
+			enemy.playerHitTest(screen.player);
+			enemy.powerUpHitTest(screen, enemy_array);
 		}
 	}
 

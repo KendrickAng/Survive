@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -29,8 +28,7 @@ public class Survive extends Game {
 	Viewport viewport;
 	SpriteBatch sprite_batch;
 	BitmapFont bitmap_font;
-	Vector2 cursor_position;
-	Sprite cursor;
+	Cursor cursor;
 
 	@Override
 	public void create() {
@@ -57,8 +55,7 @@ public class Survive extends Game {
 		bitmap_font.setColor(1, 1, 1, 1);
 
 		// Initialise Cursor
-		cursor_position = new Vector2();
-		cursor = new Sprite(new Texture("cursor.bmp"));
+		cursor = new Cursor(new Sprite(new Texture("cursor.bmp")));
 
 		// Set Screen to MainMenuScreen
 		this.setScreen(new MainMenuScreen(this));
