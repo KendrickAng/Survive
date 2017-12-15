@@ -32,6 +32,7 @@ public class Survive extends Game {
 
 	Viewport viewport;
 	SpriteBatch sprite_batch;
+	Sprite player;
 	Cursor cursor;
 
 	@Override
@@ -60,6 +61,9 @@ public class Survive extends Game {
 		// Initialise SpriteBatch, setTop projection camera
 		sprite_batch = new SpriteBatch();
 		sprite_batch.setProjectionMatrix(camera.combined);
+
+		// Initialise Player Sprite
+		player = new Sprite(new Texture("player.bmp"));
 
 		// Initialise Cursor
 		cursor = new Cursor(new Sprite(new Texture("cursor.bmp")));

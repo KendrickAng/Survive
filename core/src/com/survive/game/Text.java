@@ -14,16 +14,20 @@ class Text {
 	private float y;
 	private float origin_x;
 	private float origin_y;
-	private int type;
 	private int origin;
 	private boolean button;
-	private boolean mouse_over;
+	private int button_type;
 	private BitmapFont bitmap_font;
 	private GlyphLayout glyph_layout;
+	private CharSequence char_sequence;
 
 	float width;
 	float height;
 	float padding;
+	boolean lock;
+	boolean select;
+	boolean enter;
+	boolean cursor_over;
 
 	Text(BitmapFont bitmap_font) {
 
@@ -35,7 +39,7 @@ class Text {
 
 		glyph_layout = new GlyphLayout(bitmap_font, "");
 		this.bitmap_font = bitmap_font;
-		this.setText(char_sequence);
+		this.setText(char_sequence, true);
 	}
 
 	void setPadding(float padding) {
@@ -77,7 +81,10 @@ class Text {
 		}
 	}
 
-	void setText(CharSequence char_sequence) {
+	void setText(CharSequence char_sequence, boolean override) {
+
+		if (override)
+			this.char_sequence = char_sequence;
 
 		glyph_layout.setText(bitmap_font, char_sequence);
 		height = glyph_layout.height;
@@ -85,20 +92,26 @@ class Text {
 		this.updateOrigin();
 	}
 
-	void button(int type) {
+	void button(int button_type) {
 
 		button = true;
-		this.type = type;
+		this.button_type = button_type;
 	}
 
 	void update(Survive game) {
 
 		if (button) {
 
-			mouse_over = y - height - padding < game.cursor.position.y && game.cursor.position.y < y + padding;
+			cursor_over = y - height - padding < game.cursor.position.y && game.cursor.position.y < y + padding;
 
-			if (mouse_over && Gdx.input.isTouched())
-				switch (type) {
+			if (!lock)
+				select = cursor_over;
+
+			if (cursor_over && Gdx.input.isTouched())
+				enter = true;
+
+			if (enter)
+				switch (button_type) {
 
 					case 0:
 						Gdx.app.exit();
@@ -107,13 +120,26 @@ class Text {
 					case 1:
 						game.setScreen(new GameScreen(game));
 						break;
+
+					case 2:
+						game.setScreen(new MainMenuScreen(game));
+						break;
 				}
+		}
+
+		if (select) {
+
+			this.setText(char_sequence + " _", false);
+
+		} else {
+
+			this.setText(char_sequence, false);
 		}
 	}
 
 	void render(SpriteBatch sprite_batch) {
 
-		if (mouse_over)
+		if (select)
 			sprite_batch.draw(GAME_COLOR.get(1), 0, y - height - padding, GAME_WIDTH, height + padding * 2);
 
 		bitmap_font.draw(sprite_batch, glyph_layout, x, y);

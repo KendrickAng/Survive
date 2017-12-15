@@ -22,26 +22,49 @@ public class GameScreen implements Screen {
 	static final Array<Integer> ENEMY_PATTERN_COUNT = new Array<Integer>();
 	static final Array<Float> ENEMY_PATTERN_SPAWN_INTERVAL = new Array<Float>();
 	static final Array<Integer> ENEMY_PATTERN_SPEED = new Array<Integer>();
+	static final Array<Integer> ENEMY_PATTERN_NEXT_PATTERN = new Array<Integer>();
 
 	static final Array<Integer> POWER_UP_TYPE_COUNT = new Array<Integer>();
 	static final Array<Integer> POWER_UP_TYPE_MIN_SPAWN_INTERVAL = new Array<Integer>();
 	static final Array<Integer> POWER_UP_TYPE_MAX_SPAWN_INTERVAL = new Array<Integer>();
 
 	static {
+
 		ENEMY_PATTERN_COUNT.add(0);
 		ENEMY_PATTERN_COUNT.add(5);
 		ENEMY_PATTERN_COUNT.add(8);
 		ENEMY_PATTERN_COUNT.add(8);
+		ENEMY_PATTERN_COUNT.add(10);
+		ENEMY_PATTERN_COUNT.add(8);
+		ENEMY_PATTERN_COUNT.add(8);
+		ENEMY_PATTERN_COUNT.add(12);
 
 		ENEMY_PATTERN_SPAWN_INTERVAL.add(0f);
 		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.2f);
 		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.1f);
 		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.1f);
+		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.4f);
+		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.2f);
+		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.2f);
+		ENEMY_PATTERN_SPAWN_INTERVAL.add(0.1f);
 
 		ENEMY_PATTERN_SPEED.add(0);
 		ENEMY_PATTERN_SPEED.add(0);
 		ENEMY_PATTERN_SPEED.add(50);
 		ENEMY_PATTERN_SPEED.add(50);
+		ENEMY_PATTERN_SPEED.add(0);
+		ENEMY_PATTERN_SPEED.add(0);
+		ENEMY_PATTERN_SPEED.add(0);
+		ENEMY_PATTERN_SPEED.add(50);
+
+		ENEMY_PATTERN_NEXT_PATTERN.add(0);
+		ENEMY_PATTERN_NEXT_PATTERN.add(1);
+		ENEMY_PATTERN_NEXT_PATTERN.add(2);
+		ENEMY_PATTERN_NEXT_PATTERN.add(2);
+		ENEMY_PATTERN_NEXT_PATTERN.add(1);
+		ENEMY_PATTERN_NEXT_PATTERN.add(1);
+		ENEMY_PATTERN_NEXT_PATTERN.add(1);
+		ENEMY_PATTERN_NEXT_PATTERN.add(2);
 
 		POWER_UP_TYPE_COUNT.add(3);
 		POWER_UP_TYPE_COUNT.add(1);
@@ -79,13 +102,13 @@ public class GameScreen implements Screen {
 		// Init Power Up Types
 		power_up_types = new Array<PowerUpType>();
 		
-		for (int i = 0; i < 2; i ++)
+		for (int i = 0; i < 1; i ++)
 			power_up_types.add(new PowerUpType(i));
 
 		// Init Enemy Patterns
 		pattern_array = new Array<EnemyPattern>();
 		pattern_array.add(new EnemyPattern(new Sprite(new Texture("enemy.bmp")), pattern_array, 0, 0));
-		pattern_array.first().newPattern(2);
+		pattern_array.first().nextPattern(2);
 
 		// Set Viewport to FitViewport
 		viewport.apply();
@@ -114,8 +137,8 @@ public class GameScreen implements Screen {
 		for (EnemyPattern pattern:pattern_array)
 			pattern.update(this);
 
-		score.setText("SCORE: " + String.valueOf(player.score));
-		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+		score.setText("SCORE: " + String.valueOf(player.score), true);
+		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), true);
 
 		// Render
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -128,10 +151,11 @@ public class GameScreen implements Screen {
 		for (PowerUpType power_up_type:power_up_types)
 			power_up_type.render(sprite_batch);
 
+		player.render(sprite_batch);
+
 		for (EnemyPattern pattern:pattern_array)
 			pattern.render(sprite_batch);
 
-		player.render(sprite_batch);
 		score.render(sprite_batch);
 		fps.render(sprite_batch);
 		cursor.render(sprite_batch);

@@ -17,8 +17,8 @@ public class GameOverScreen implements Screen {
 	private SpriteBatch sprite_batch;
 	private Cursor cursor;
 	private Text title;
-	private Text restart;
-	private TextList text_list;
+	private TextList information;
+	private TextList options;
 
 	GameOverScreen(Survive game, GameScreen screen) {
 
@@ -37,13 +37,19 @@ public class GameOverScreen implements Screen {
 		Text score = new Text(GAME_FONT.get(0), "SCORE: " + String.valueOf(screen.player.score));
 		score.setPadding(5);
 
-		text_list = new TextList(kills, time_alive, score);
-		text_list.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING * 2 - title.height);
+		information = new TextList(kills, time_alive, score);
+		information.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING * 2 - title.height);
 
-		restart = new Text(GAME_FONT.get(1), "RESTART");
-		restart.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
-		restart.setPadding(20);
+		Text restart = new Text(GAME_FONT.get(1), "RESTART");
+		restart.setPadding(15);
 		restart.button(1);
+		Text back = new Text(GAME_FONT.get(1), "BACK");
+		back.setPadding(15);
+		back.button(2);
+
+		options = new TextList(restart, back);
+		options.setOrigin(3,SCREEN_PADDING, SCREEN_PADDING);
+		options.keyboard();
 	}
 
 	@Override
@@ -54,15 +60,15 @@ public class GameOverScreen implements Screen {
 
 		// Update
 		cursor.update(game);
-		restart.update(game);
+		options.update(game, delta);
 
 		// Render
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		sprite_batch.begin();
 		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
 		title.render(sprite_batch);
-		text_list.render(sprite_batch);
-		restart.render(sprite_batch);
+		information.render(sprite_batch);
+		options.render(sprite_batch);
 		cursor.render(sprite_batch);
 		sprite_batch.end();
 	}

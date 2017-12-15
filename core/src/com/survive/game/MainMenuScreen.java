@@ -3,6 +3,7 @@ package com.survive.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -17,7 +18,8 @@ public class MainMenuScreen implements Screen {
     private Viewport viewport;
 	private SpriteBatch sprite_batch;
 	private Text title;
-    private TextList text_list;
+    private TextList options;
+    private Sprite player;
 
     MainMenuScreen(Survive game) {
 
@@ -25,19 +27,28 @@ public class MainMenuScreen implements Screen {
     	this.cursor = game.cursor;
     	this.viewport = game.viewport;
     	this.sprite_batch = game.sprite_batch;
+    	this.player = game.player;
 
     	title = new Text(GAME_FONT.get(2), "SURVIVE");
     	title.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
 
+		player.setPosition(SCREEN_PADDING * 2 + title.width, GAME_HEIGHT - SCREEN_PADDING - player.getHeight()/2);
+		player.setScale(2);
+		player.setRotation(45);
+
     	Text play = new Text(GAME_FONT.get(1), "PLAY");
-    	play.setPadding(20);
+    	play.setPadding(15);
     	play.button(1);
+		Text settings = new Text(GAME_FONT.get(1), "SETTINGS");
+		settings.setPadding(15);
+		settings.button(0);
     	Text exit = new Text(GAME_FONT.get(1), "EXIT");
-    	exit.setPadding(20);
+    	exit.setPadding(15);
     	exit.button(0);
 
-    	text_list = new TextList(play, exit);
-    	text_list.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
+    	options = new TextList(play, settings, exit);
+    	options.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
+    	options.keyboard();
 
     	// Don't restrict cursor to screen boundaries
 		Gdx.input.setCursorCatched(true);
@@ -52,14 +63,15 @@ public class MainMenuScreen implements Screen {
 
     	// Update
     	cursor.update(game);
-    	text_list.update(game);
+    	options.update(game, delta);
 
     	// Render
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         sprite_batch.begin();
 		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
 		title.render(sprite_batch);
-		text_list.render(sprite_batch);
+		player.draw(sprite_batch);
+		options.render(sprite_batch);
 		cursor.render(sprite_batch);
 		sprite_batch.end();
     }

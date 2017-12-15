@@ -4,11 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
+import static com.survive.game.EnemyPattern.SPAWN_TIMER;
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
 
 public class Enemy {
 
+	private static final float BLINK_TIMER = 0.1f;
 	private static final int PLAYER_CHASE_SPEED = 80;
 
 	float x;
@@ -16,6 +18,10 @@ public class Enemy {
 	float speed;
 	double theta;
 	private float radius;
+	private boolean blink;
+	private boolean spawned;
+	private float blink_timer;
+	private float spawn_timer;
 	private Sprite sprite;
 	private Circle hit_box;
 
@@ -29,19 +35,22 @@ public class Enemy {
 	// Add displacement per unit time in x and y direction
 	void move(float delta) {
 
-		x -= Math.sin(theta) * speed * delta;
-		y += Math.cos(theta) * speed * delta;
+		if (spawned) {
+
+			x -= Math.sin(theta) * speed * delta;
+			y += Math.cos(theta) * speed * delta;
+		}
 	}
 
-	void playerChase(float delta, Player player) {
+	void playerChase(GameScreen screen) {
 
 		// Chase player
-		theta = Math.atan2(x - player.x, player.y - y);
+		theta = Math.atan2(x - screen.player.x, screen.player.y - y);
 		speed = PLAYER_CHASE_SPEED;
-		move(delta);
+		move(screen.delta);
 	}
 
-	void update() {
+	void update(float delta) {
 
 		// Keep enemy within screen
 		if (x < radius)
@@ -57,11 +66,26 @@ public class Enemy {
 			y = MAP_HEIGHT - radius;
 
 		hit_box.set(x, y, radius);
+
+		if (!spawned) {
+
+			blink_timer += delta;
+			spawn_timer += delta;
+
+			if (blink_timer > BLINK_TIMER) {
+
+				blink = !blink;
+				blink_timer -= BLINK_TIMER;
+			}
+
+			if (spawn_timer > SPAWN_TIMER)
+				spawned = true;
+		}
 	}
 
 	void playerHitTest(Player player) {
 
-		if (player.hit_box.intersectCircle(hit_box))
+		if (spawned && player.hit_box.intersectCircle(hit_box))
 			player.dead = true;
 	}
 
@@ -77,6 +101,14 @@ public class Enemy {
 	}
 
 	void render(SpriteBatch batch) {
+
+		sprite.setAlpha(0.1f);
+
+		if (blink)
+			sprite.setAlpha(0.8f);
+
+		if (spawned)
+			sprite.setAlpha(1);
 
 		sprite.setPosition(x - radius, y - radius);
 		sprite.draw(batch);

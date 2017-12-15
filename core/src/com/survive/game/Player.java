@@ -10,7 +10,7 @@ import static com.survive.game.GameScreen.MAP_WIDTH;
 
 class Player {
 
-	private static final int GYROSCOPE_SENSITIVITY = 5;
+	private static final int GYROSCOPE_SENSITIVITY = 4;
 	private static final int SPEED_SENSITIVITY = 10;
 	private static final int MAX_SPEED = 500;
 	private static final int KILLS_MULTIPLIER = 10;
@@ -51,11 +51,11 @@ class Player {
 
 	void update(Survive game, GameScreen screen) {
 
-		if (dead)
-			game.setScreen(new GameOverScreen(game, screen));
-
 		time_alive += screen.delta;
 		score = kills * KILLS_MULTIPLIER + (int) time_alive;
+
+		if (dead)
+			game.setScreen(new GameOverScreen(game, screen));
 
 		// For Android phones (tilting sensor)
 		// TODO: Use RotationVector Sensor
