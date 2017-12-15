@@ -3,46 +3,47 @@ package com.survive.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import static com.survive.game.Survive.GAME_COLOR;
-import static com.survive.game.Survive.GAME_HEIGHT;
-import static com.survive.game.Survive.GAME_WIDTH;
+import static com.survive.game.Survive.*;
 
 public class GameOverScreen implements Screen {
 
 	private static final int SCREEN_PADDING = 50;
-	private static final int FONT_HEIGHT = 14;
-	private static final int TITLE_PADDING = 50;
-	private static final int INFORMATION_PADDING = 10;
-	private static final int TITLE_HEIGHT = TITLE_PADDING + FONT_HEIGHT;
-	private static final int INFORMATION_HEIGHT = INFORMATION_PADDING + FONT_HEIGHT;
 
-	private int kills;
-	private int time_alive;
-	private int score;
 	private Survive game;
 	private Viewport viewport;
 	private SpriteBatch sprite_batch;
-	private BitmapFont bitmap_font;
 	private Cursor cursor;
-	private Button restart;
+	private Text title;
+	private Text restart;
+	private TextList text_list;
 
 	GameOverScreen(Survive game, GameScreen screen) {
 
 		this.game = game;
 		this.viewport = game.viewport;
 		this.sprite_batch = game.sprite_batch;
-		this.bitmap_font = game.bitmap_font;
 		this.cursor = game.cursor;
-		this.kills = screen.player.kills;
-		this.time_alive = (int) screen.player.time_alive;
-		this.score = screen.player.score;
 
-		// TODO: Improve Button & Fonts
-		restart = new Button(bitmap_font, "RESTART", SCREEN_PADDING, SCREEN_PADDING);
+		title = new Text(GAME_FONT.get(2), "GAME OVER");
+		title.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
+
+		Text kills = new Text(GAME_FONT.get(0), "KILLS: " + String.valueOf(screen.player.kills));
+		kills.setPadding(5);
+		Text time_alive = new Text(GAME_FONT.get(0), "TIME: " + String.valueOf((int) screen.player.time_alive));
+		time_alive.setPadding(5);
+		Text score = new Text(GAME_FONT.get(0), "SCORE: " + String.valueOf(screen.player.score));
+		score.setPadding(5);
+
+		text_list = new TextList(kills, time_alive, score);
+		text_list.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING * 2 - title.height);
+
+		restart = new Text(GAME_FONT.get(1), "RESTART");
+		restart.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
+		restart.setPadding(20);
+		restart.button(1);
 	}
 
 	@Override
@@ -59,10 +60,8 @@ public class GameOverScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		sprite_batch.begin();
 		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
-		bitmap_font.draw(sprite_batch, "GAME OVER", SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
-		bitmap_font.draw(sprite_batch, "KILLS: " + String.valueOf(kills), SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING - TITLE_HEIGHT);
-		bitmap_font.draw(sprite_batch, "TIME: " + String.valueOf(time_alive), SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING - TITLE_HEIGHT - INFORMATION_HEIGHT);
-		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(score), SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING - TITLE_HEIGHT - INFORMATION_HEIGHT * 2);
+		title.render(sprite_batch);
+		text_list.render(sprite_batch);
 		restart.render(sprite_batch);
 		cursor.render(sprite_batch);
 		sprite_batch.end();

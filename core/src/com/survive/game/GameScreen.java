@@ -4,16 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import static com.survive.game.Survive.GAME_COLOR;
-import static com.survive.game.Survive.GAME_HEIGHT;
-import static com.survive.game.Survive.GAME_WIDTH;
+import static com.survive.game.Survive.*;
 
 public class GameScreen implements Screen {
 
@@ -59,10 +55,11 @@ public class GameScreen implements Screen {
 
 	private Viewport viewport;
 	private SpriteBatch sprite_batch;
-	private BitmapFont bitmap_font;
 	private Cursor cursor;
 	private Array<EnemyPattern> pattern_array;
 	private Survive game;
+	private Text score;
+	private Text fps;
 
 	float delta;
 	Player player;
@@ -74,7 +71,6 @@ public class GameScreen implements Screen {
 
 		viewport = game.viewport;
 		sprite_batch = game.sprite_batch;
-		bitmap_font = game.bitmap_font;
 		cursor = game.cursor;
 
 		// Init Player
@@ -93,10 +89,11 @@ public class GameScreen implements Screen {
 
 		// Set Viewport to FitViewport
 		viewport.apply();
-		bitmap_font.getData();
 
-		// Don't restrict cursor to screen boundaries
-		Gdx.input.setCursorCatched(true);
+		score = new Text(GAME_FONT.get(0));
+		score.setOrigin(0, GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
+		fps = new Text(GAME_FONT.get(0));
+		fps.setOrigin(1, GAME_WIDTH - GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 	}
 
 	@Override
@@ -117,6 +114,9 @@ public class GameScreen implements Screen {
 		for (EnemyPattern pattern:pattern_array)
 			pattern.update(this);
 
+		score.setText("SCORE: " + String.valueOf(player.score));
+		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+
 		// Render
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		sprite_batch.begin();
@@ -132,8 +132,8 @@ public class GameScreen implements Screen {
 			pattern.render(sprite_batch);
 
 		player.render(sprite_batch);
-		bitmap_font.draw(sprite_batch, "SCORE: " + String.valueOf(player.score), GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
-		bitmap_font.draw(sprite_batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), GAME_DOCK_PADDING + 300, GAME_HEIGHT - GAME_DOCK_PADDING);
+		score.render(sprite_batch);
+		fps.render(sprite_batch);
 		cursor.render(sprite_batch);
 		sprite_batch.end();
 	}
