@@ -49,6 +49,7 @@ public class GameOverScreen implements Screen {
 		back.setPadding(15);
 		input_multiplexer.addProcessor(back.button(game, 2));
 
+		// Create Text list for GameOverScreen, enable interaction
 		options = new TextList(restart, back);
 		options.setOrigin(3,SCREEN_PADDING, SCREEN_PADDING);
 		input_multiplexer.addProcessor(options.buttonController());

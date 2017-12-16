@@ -17,6 +17,7 @@ class TextListInputProcessor implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 
+		// Use keyboard to select Text
 		texts[index].select = false;
 
 		switch (keycode) {
@@ -82,11 +83,12 @@ class TextListInputProcessor implements InputProcessor {
 		return false;
 	}
 
+	// Select the currently locked Text if it is touched
 	private void updateTouch() {
 
 		for (int i = 0; i < texts.length; i ++) {
 
-			if (texts[i].touch_position) {
+			if (texts[i].touched) {
 
 				texts[index].select = false;
 				index = i;

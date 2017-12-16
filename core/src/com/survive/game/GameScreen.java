@@ -13,17 +13,21 @@ import static com.survive.game.Survive.*;
 
 public class GameScreen implements Screen {
 
+	// Define HUD constants
 	private static final int GAME_DOCK_PADDING = 10;
 	private static final int DOCK_HEIGHT = 14 + GAME_DOCK_PADDING * 2;
 
+	// Define game boundary constants
 	static final int MAP_HEIGHT = GAME_HEIGHT - DOCK_HEIGHT;
 	static final int MAP_WIDTH = GAME_WIDTH;
 
+	// Define enemy constants
 	static final Array<Integer> ENEMY_PATTERN_COUNT = new Array<Integer>();
 	static final Array<Float> ENEMY_PATTERN_SPAWN_INTERVAL = new Array<Float>();
 	static final Array<Integer> ENEMY_PATTERN_SPEED = new Array<Integer>();
 	static final Array<Integer> ENEMY_PATTERN_NEXT_PATTERN = new Array<Integer>();
 
+	// Define item (powerup) constants
 	static final Array<Integer> POWER_UP_TYPE_COUNT = new Array<Integer>();
 	static final Array<Integer> POWER_UP_TYPE_MIN_SPAWN_INTERVAL = new Array<Integer>();
 	static final Array<Integer> POWER_UP_TYPE_MAX_SPAWN_INTERVAL = new Array<Integer>();
@@ -111,6 +115,7 @@ public class GameScreen implements Screen {
 		// Set Viewport to FitViewport
 		viewport.apply();
 
+		// Use bitmap_21.fnt. Load score & fps HUD text
 		score = new Text(GAME_FONT.get(0));
 		score.setOrigin(0, GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		fps = new Text(GAME_FONT.get(0));
@@ -125,7 +130,7 @@ public class GameScreen implements Screen {
 
 		this.delta = delta;
 
-		// Update
+		// Update game instance
 		game.platform.updateCursor(game);
 		player.update(game, this);
 
@@ -138,7 +143,7 @@ public class GameScreen implements Screen {
 		score.setText("SCORE: " + String.valueOf(player.score), true);
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), true);
 
-		// Render
+		// Render background, items, player, enemies, HUD
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		sprite_batch.begin();
 		sprite_batch.disableBlending();
@@ -156,7 +161,7 @@ public class GameScreen implements Screen {
 
 		score.render(sprite_batch);
 		fps.render(sprite_batch);
-		game.platform.updateCursor(game);
+		game.platform.renderCursor(game);
 		sprite_batch.end();
 	}
 

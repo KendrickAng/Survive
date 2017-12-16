@@ -8,6 +8,7 @@ public class AndroidPlatform implements Platform {
 		game.cursor.hidden = true;
 	}
 
+	// Don't display cursor if the setting is hidden.
 	@Override
 	public void updateCursor(Survive game) {
 

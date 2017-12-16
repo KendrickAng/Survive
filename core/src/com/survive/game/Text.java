@@ -26,14 +26,16 @@ class Text {
 	boolean lock;
 	boolean select;
 	boolean enter;
-	boolean touch_position;
+	boolean touched;
 
+	// Loads a new font
 	Text(BitmapFont bitmap_font) {
 
 		glyph_layout = new GlyphLayout(bitmap_font, "");
 		this.bitmap_font = bitmap_font;
 	}
 
+	// Loads a new font, reading char_sequence
 	Text(BitmapFont bitmap_font, CharSequence char_sequence) {
 
 		glyph_layout = new GlyphLayout(bitmap_font, "");
@@ -46,6 +48,7 @@ class Text {
 		this.padding = padding;
 	}
 
+	// Sets origin of current font instance
 	void setOrigin(int origin, float origin_x, float origin_y) {
 
 		this.origin = origin;
@@ -54,6 +57,12 @@ class Text {
 		this.updateOrigin();
 	}
 
+	/* Changes point of drawing for font:
+		Starting from point (0),
+		Ending at point(1),
+		Ending at + above previous line (2)
+		Starting from + above previous line (3)
+	 */
 	private void updateOrigin() {
 
 		switch(origin) {
@@ -80,6 +89,7 @@ class Text {
 		}
 	}
 
+	// Updates the line of text using current glyphLayout
 	void setText(CharSequence char_sequence, boolean override) {
 
 		if (override)
@@ -91,6 +101,7 @@ class Text {
 		this.updateOrigin();
 	}
 
+	// Create button of specified function (Play, exit etc)
 	TextInputProcessor button(Survive game, int button_type) {
 
 		this.button_type = button_type;
@@ -99,11 +110,18 @@ class Text {
 
 	void update(Survive game) {
 
+		// If text moused over, add "_" to text. Else draw default text based on char sequence
 		if (select)
 			this.setText(char_sequence + " _", false);
 		else
 			this.setText(char_sequence, false);
 
+		/* Select action based on button classification
+			Exit game (0)
+			Play game (1)
+			Back to main menu (2)
+			Settings (3)
+		 */
 		if (enter)
 			switch (button_type) {
 
@@ -123,13 +141,15 @@ class Text {
 					game.setScreen(new SettingsScreen(game));
 					break;
 			}
-	}
+		}
 
 	void render(SpriteBatch sprite_batch) {
 
+		// Draw highlight if selected
 		if (select)
 			sprite_batch.draw(GAME_COLOR.get(1), 0, y - height - padding, GAME_WIDTH, height + padding * 2);
 
+		// Draw text over highlight (if any)
 		bitmap_font.draw(sprite_batch, glyph_layout, x, y);
 	}
 }

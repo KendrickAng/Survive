@@ -23,14 +23,17 @@ public class MainMenuScreen implements Screen {
 
     MainMenuScreen(Survive game) {
 
+    	// Use same resources as game
     	this.game = game;
     	this.viewport = game.viewport;
     	this.sprite_batch = game.sprite_batch;
     	this.player = game.player;
 
+    	// Game title
     	title = new Text(GAME_FONT.get(2), "SURVIVE");
     	title.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
 
+    	// Set image beside game title
 		player.setPosition(SCREEN_PADDING * 2 + title.width, GAME_HEIGHT - SCREEN_PADDING - player.getHeight()/2);
 		player.setScale(2);
 		player.setRotation(45);
@@ -38,6 +41,7 @@ public class MainMenuScreen implements Screen {
 		// Combine all InputProcessors
 		InputMultiplexer input_multiplexer = new InputMultiplexer();
 
+		// bitmap_28.fnt for menu text. Button types can be found in Text
     	Text play = new Text(GAME_FONT.get(1), "PLAY");
     	play.setPadding(15);
     	input_multiplexer.addProcessor(play.button(game, 1));
@@ -48,13 +52,14 @@ public class MainMenuScreen implements Screen {
     	exit.setPadding(15);
     	input_multiplexer.addProcessor(exit.button(game, 0));
 
+		// Load custom text-buttons onto screen
 		options = new TextList(play, settings, exit);
     	options.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
     	input_multiplexer.addProcessor(options.buttonController());
 
     	Gdx.input.setInputProcessor(input_multiplexer);
 
-    	// Don't restrict cursor to screen boundaries
+    	// Restrict cursor to screen boundaries
 		Gdx.input.setCursorCatched(true);
 	}
 
@@ -65,11 +70,11 @@ public class MainMenuScreen implements Screen {
     @Override
     public void render(float delta) {
 
-    	// Update
+		// Update game resources
     	game.platform.updateCursor(game);
     	options.update(game);
 
-    	// Render
+    	// Render all game resources
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         sprite_batch.begin();
 		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
