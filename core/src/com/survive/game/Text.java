@@ -10,6 +10,7 @@ import static com.survive.game.Survive.GAME_WIDTH;
 
 class Text {
 
+	private static final float BLINK_TIMER = 0.5f;
 	private float x;
 	private float origin_x;
 	private float origin_y;
@@ -18,6 +19,8 @@ class Text {
 	private GlyphLayout glyph_layout;
 	private CharSequence char_sequence;
 	private int button_type;
+	private boolean blink;
+	private float blink_timer;
 
 	float y;
 	float width;
@@ -108,10 +111,18 @@ class Text {
 		return new TextInputProcessor(game, this);
 	}
 
-	void update(Survive game) {
+	void update(Survive game, float delta) {
+
+		blink_timer += delta;
+
+		if (blink_timer > BLINK_TIMER) {
+
+			blink = !blink;
+			blink_timer -= BLINK_TIMER;
+		}
 
 		// If text moused over, add "_" to text. Else draw default text based on char sequence
-		if (select)
+		if (select && blink)
 			this.setText(char_sequence + " _", false);
 		else
 			this.setText(char_sequence, false);

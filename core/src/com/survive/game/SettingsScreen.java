@@ -48,7 +48,7 @@ class SettingsScreen implements Screen {
 
     	// Update
     	game.platform.updateCursor(game);
-    	options.update(game);
+    	options.update(game, delta);
 
     	// Render
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

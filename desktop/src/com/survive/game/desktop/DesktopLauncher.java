@@ -18,10 +18,12 @@ public class DesktopLauncher {
 		config.width = GAME_WIDTH;
 		config.height = GAME_HEIGHT;
 		config.fullscreen = false;
-		config.vSyncEnabled = false;
+		config.vSyncEnabled = true;
 		config.foregroundFPS = 0;
 		config.backgroundFPS = 0;
 
 		new LwjglApplication(new Survive(new DesktopPlatform()), config);
+
+		// TODO: Somehow restart the game.
 	}
 }

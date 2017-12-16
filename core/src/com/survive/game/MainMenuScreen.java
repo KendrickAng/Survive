@@ -58,9 +58,6 @@ public class MainMenuScreen implements Screen {
     	input_multiplexer.addProcessor(options.buttonController());
 
     	Gdx.input.setInputProcessor(input_multiplexer);
-
-    	// Restrict cursor to screen boundaries
-		Gdx.input.setCursorCatched(true);
 	}
 
 
@@ -72,7 +69,7 @@ public class MainMenuScreen implements Screen {
 
 		// Update game resources
     	game.platform.updateCursor(game);
-    	options.update(game);
+    	options.update(game, delta);
 
     	// Render all game resources
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

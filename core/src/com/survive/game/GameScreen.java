@@ -120,6 +120,8 @@ public class GameScreen implements Screen {
 		score.setOrigin(0, GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
 		fps = new Text(GAME_FONT.get(0));
 		fps.setOrigin(1, GAME_WIDTH - GAME_DOCK_PADDING, GAME_HEIGHT - GAME_DOCK_PADDING);
+
+		Gdx.input.setCursorPosition(viewport.getScreenWidth()/2, viewport.getScreenHeight()/2);
 	}
 
 	@Override

@@ -91,6 +91,10 @@ public class Survive extends Game {
 
 		// Set Screen to MainMenuScreen
 		this.setScreen(new MainMenuScreen(this));
+
+		// Don't restrict cursor to screen boundaries
+		Gdx.input.setCursorCatched(true);
+		Gdx.input.setCursorPosition(viewport.getScreenWidth()/2, viewport.getScreenHeight()/2);
 	}
 
 	@Override

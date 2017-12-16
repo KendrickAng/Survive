@@ -63,11 +63,11 @@ class TextList {
 		}
 	}
 
-	void update(Survive game) {
+	void update(Survive game, float delta) {
 
 		// Continue parsing for inputs/mouse-overs on all 'Text-buttons'
 		for (Text text:texts)
-			text.update(game);
+			text.update(game, delta);
 	}
 
 	// Draw on screen all text(s) in TextList, including padding
