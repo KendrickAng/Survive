@@ -57,8 +57,7 @@ class Player {
 		if (dead)
 			game.setScreen(new GameOverScreen(game, screen));
 
-		// For Android phones (tilting sensor)
-		// TODO: Use RotationVector Sensor
+		// For Android phones (gyroscope sensor)
 		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
 
 			offset_x -= Gdx.input.getGyroscopeX() * GYROSCOPE_SENSITIVITY;

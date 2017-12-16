@@ -15,6 +15,6 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useImmersiveMode = true;
 		config.useGyroscope = true;
 
-		initialize(new Survive(), config);
+		initialize(new Survive(new AndroidPlatform()), config);
 	}
 }

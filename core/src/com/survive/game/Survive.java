@@ -30,10 +30,16 @@ public class Survive extends Game {
 		GAME_FONT_STRING.add("fonts/bitmap_35.fnt");
 	}
 
+	Platform platform;
 	Viewport viewport;
 	SpriteBatch sprite_batch;
 	Sprite player;
 	Cursor cursor;
+
+	public Survive(Platform platform) {
+
+		this.platform = platform;
+	}
 
 	@Override
 	public void create() {
@@ -67,6 +73,9 @@ public class Survive extends Game {
 
 		// Initialise Cursor
 		cursor = new Cursor(new Sprite(new Texture("cursor.bmp")));
+
+		// Update Game Settings
+		platform.updateSettings(this);
 
 		// Set Screen to MainMenuScreen
 		this.setScreen(new MainMenuScreen(this));

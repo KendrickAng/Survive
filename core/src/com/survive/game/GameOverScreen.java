@@ -1,6 +1,7 @@
 package com.survive.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +16,6 @@ public class GameOverScreen implements Screen {
 	private Survive game;
 	private Viewport viewport;
 	private SpriteBatch sprite_batch;
-	private Cursor cursor;
 	private Text title;
 	private TextList information;
 	private TextList options;
@@ -25,7 +25,6 @@ public class GameOverScreen implements Screen {
 		this.game = game;
 		this.viewport = game.viewport;
 		this.sprite_batch = game.sprite_batch;
-		this.cursor = game.cursor;
 
 		title = new Text(GAME_FONT.get(2), "GAME OVER");
 		title.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
@@ -40,16 +39,21 @@ public class GameOverScreen implements Screen {
 		information = new TextList(kills, time_alive, score);
 		information.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING * 2 - title.height);
 
+		// Combine all InputProcessors
+		InputMultiplexer input_multiplexer = new InputMultiplexer();
+
 		Text restart = new Text(GAME_FONT.get(1), "RESTART");
 		restart.setPadding(15);
-		restart.button(1);
+		input_multiplexer.addProcessor(restart.button(game, 1));
 		Text back = new Text(GAME_FONT.get(1), "BACK");
 		back.setPadding(15);
-		back.button(2);
+		input_multiplexer.addProcessor(back.button(game, 2));
 
 		options = new TextList(restart, back);
 		options.setOrigin(3,SCREEN_PADDING, SCREEN_PADDING);
-		options.keyboard();
+		input_multiplexer.addProcessor(options.buttonController());
+
+		Gdx.input.setInputProcessor(input_multiplexer);
 	}
 
 	@Override
@@ -59,8 +63,8 @@ public class GameOverScreen implements Screen {
 	public void render(float delta) {
 
 		// Update
-		cursor.update(game);
-		options.update(game, delta);
+		game.platform.updateCursor(game);
+		options.update(game);
 
 		// Render
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -69,7 +73,7 @@ public class GameOverScreen implements Screen {
 		title.render(sprite_batch);
 		information.render(sprite_batch);
 		options.render(sprite_batch);
-		cursor.render(sprite_batch);
+		game.platform.renderCursor(game);
 		sprite_batch.end();
 	}
 

@@ -1,6 +1,7 @@
 package com.survive.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,7 +15,6 @@ public class MainMenuScreen implements Screen {
     private static final int SCREEN_PADDING = 50;
 
     private Survive game;
-    private Cursor cursor;
     private Viewport viewport;
 	private SpriteBatch sprite_batch;
 	private Text title;
@@ -24,7 +24,6 @@ public class MainMenuScreen implements Screen {
     MainMenuScreen(Survive game) {
 
     	this.game = game;
-    	this.cursor = game.cursor;
     	this.viewport = game.viewport;
     	this.sprite_batch = game.sprite_batch;
     	this.player = game.player;
@@ -36,19 +35,24 @@ public class MainMenuScreen implements Screen {
 		player.setScale(2);
 		player.setRotation(45);
 
+		// Combine all InputProcessors
+		InputMultiplexer input_multiplexer = new InputMultiplexer();
+
     	Text play = new Text(GAME_FONT.get(1), "PLAY");
     	play.setPadding(15);
-    	play.button(1);
+    	input_multiplexer.addProcessor(play.button(game, 1));
 		Text settings = new Text(GAME_FONT.get(1), "SETTINGS");
 		settings.setPadding(15);
-		settings.button(0);
+		input_multiplexer.addProcessor(settings.button(game, 3));
     	Text exit = new Text(GAME_FONT.get(1), "EXIT");
     	exit.setPadding(15);
-    	exit.button(0);
+    	input_multiplexer.addProcessor(exit.button(game, 0));
 
-    	options = new TextList(play, settings, exit);
+		options = new TextList(play, settings, exit);
     	options.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
-    	options.keyboard();
+    	input_multiplexer.addProcessor(options.buttonController());
+
+    	Gdx.input.setInputProcessor(input_multiplexer);
 
     	// Don't restrict cursor to screen boundaries
 		Gdx.input.setCursorCatched(true);
@@ -62,8 +66,8 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
 
     	// Update
-    	cursor.update(game);
-    	options.update(game, delta);
+    	game.platform.updateCursor(game);
+    	options.update(game);
 
     	// Render
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -72,7 +76,7 @@ public class MainMenuScreen implements Screen {
 		title.render(sprite_batch);
 		player.draw(sprite_batch);
 		options.render(sprite_batch);
-		cursor.render(sprite_batch);
+		game.platform.renderCursor(game);
 		sprite_batch.end();
     }
 

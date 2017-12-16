@@ -11,23 +11,22 @@ import static com.survive.game.Survive.GAME_WIDTH;
 class Text {
 
 	private float x;
-	private float y;
 	private float origin_x;
 	private float origin_y;
 	private int origin;
-	private boolean button;
-	private int button_type;
 	private BitmapFont bitmap_font;
 	private GlyphLayout glyph_layout;
 	private CharSequence char_sequence;
+	private int button_type;
 
+	float y;
 	float width;
 	float height;
 	float padding;
 	boolean lock;
 	boolean select;
 	boolean enter;
-	boolean cursor_over;
+	boolean touch_position;
 
 	Text(BitmapFont bitmap_font) {
 
@@ -92,49 +91,38 @@ class Text {
 		this.updateOrigin();
 	}
 
-	void button(int button_type) {
+	TextInputProcessor button(Survive game, int button_type) {
 
-		button = true;
 		this.button_type = button_type;
+		return new TextInputProcessor(game, this);
 	}
 
 	void update(Survive game) {
 
-		if (button) {
-
-			cursor_over = y - height - padding < game.cursor.position.y && game.cursor.position.y < y + padding;
-
-			if (!lock)
-				select = cursor_over;
-
-			if (cursor_over && Gdx.input.isTouched())
-				enter = true;
-
-			if (enter)
-				switch (button_type) {
-
-					case 0:
-						Gdx.app.exit();
-						break;
-
-					case 1:
-						game.setScreen(new GameScreen(game));
-						break;
-
-					case 2:
-						game.setScreen(new MainMenuScreen(game));
-						break;
-				}
-		}
-
-		if (select) {
-
+		if (select)
 			this.setText(char_sequence + " _", false);
-
-		} else {
-
+		else
 			this.setText(char_sequence, false);
-		}
+
+		if (enter)
+			switch (button_type) {
+
+				case 0:
+					Gdx.app.exit();
+					break;
+
+				case 1:
+					game.setScreen(new GameScreen(game));
+					break;
+
+				case 2:
+					game.setScreen(new MainMenuScreen(game));
+					break;
+
+				case 3:
+					game.setScreen(new SettingsScreen(game));
+					break;
+			}
 	}
 
 	void render(SpriteBatch sprite_batch) {

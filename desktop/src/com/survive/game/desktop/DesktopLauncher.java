@@ -2,6 +2,7 @@ package com.survive.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.survive.game.DesktopPlatform;
 import com.survive.game.Survive;
 
 import static com.survive.game.Survive.GAME_HEIGHT;
@@ -21,6 +22,6 @@ public class DesktopLauncher {
 		config.foregroundFPS = 0;
 		config.backgroundFPS = 0;
 
-		new LwjglApplication(new Survive(), config);
+		new LwjglApplication(new Survive(new DesktopPlatform()), config);
 	}
 }

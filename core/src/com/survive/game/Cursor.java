@@ -10,6 +10,7 @@ public class Cursor {
 	private float radius;
 	private Sprite sprite;
 
+	boolean hidden;
 	Vector2 position;
 
 	Cursor(Sprite sprite) {

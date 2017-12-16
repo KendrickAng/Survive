@@ -78,7 +78,6 @@ public class GameScreen implements Screen {
 
 	private Viewport viewport;
 	private SpriteBatch sprite_batch;
-	private Cursor cursor;
 	private Array<EnemyPattern> pattern_array;
 	private Survive game;
 	private Text score;
@@ -94,7 +93,6 @@ public class GameScreen implements Screen {
 
 		viewport = game.viewport;
 		sprite_batch = game.sprite_batch;
-		cursor = game.cursor;
 
 		// Init Player
 		player = new Player(new Sprite(new Texture("player.bmp")));
@@ -128,7 +126,7 @@ public class GameScreen implements Screen {
 		this.delta = delta;
 
 		// Update
-		cursor.update(game);
+		game.platform.updateCursor(game);
 		player.update(game, this);
 
 		for (PowerUpType power_up_type:power_up_types)
@@ -158,7 +156,7 @@ public class GameScreen implements Screen {
 
 		score.render(sprite_batch);
 		fps.render(sprite_batch);
-		cursor.render(sprite_batch);
+		game.platform.updateCursor(game);
 		sprite_batch.end();
 	}
 

@@ -318,8 +318,8 @@ public class EnemyPattern {
 		for (Enemy enemy:enemy_array) {
 
 			enemy.update(screen.delta);
-			enemy.playerHitTest(screen.player);
 			enemy.powerUpHitTest(screen, enemy_array);
+			enemy.playerHitTest(screen.player);
 		}
 	}
 
