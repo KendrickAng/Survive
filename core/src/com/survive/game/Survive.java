@@ -13,14 +13,24 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+/* -------------------------------------------------------------------
+	Initialise game resources for usage in MainMenuScreen & GameScreen
+	------------------------------------------------------------------
+ */
+
 public class Survive extends Game {
 
+	// Define game dimensions
 	public static final int GAME_WIDTH = 854;
 	public static final int GAME_HEIGHT = 480;
+
+	// Init storage for game resources
 	static final Array<Texture> GAME_COLOR = new Array<Texture>();
 	static final Array<BitmapFont> GAME_FONT = new Array<BitmapFont>();
 	private static final Array<String> GAME_COLOR_STRING = new Array<String>();
 	private static final Array<String> GAME_FONT_STRING = new Array<String>();
+
+	// Call once during initialization
 	static {
 		GAME_COLOR_STRING.add("#263238");
 		GAME_COLOR_STRING.add("#1A2226");
@@ -38,6 +48,7 @@ public class Survive extends Game {
 	@Override
 	public void create() {
 
+		// Add game colour backgrounds to Array
 		for (String color:GAME_COLOR_STRING) {
 
 			Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -46,6 +57,7 @@ public class Survive extends Game {
 			GAME_COLOR.add(new Texture(pixmap));
 		}
 
+		// Add game font(s) to Array
 		for (String font:GAME_FONT_STRING) {
 
 			BitmapFont bitmap_font = new BitmapFont(Gdx.files.internal(font));

@@ -29,12 +29,14 @@ class Text {
 	boolean enter;
 	boolean cursor_over;
 
+	// Loads a new font
 	Text(BitmapFont bitmap_font) {
 
 		glyph_layout = new GlyphLayout(bitmap_font, "");
 		this.bitmap_font = bitmap_font;
 	}
 
+	// Loads a new font, reading char_sequence
 	Text(BitmapFont bitmap_font, CharSequence char_sequence) {
 
 		glyph_layout = new GlyphLayout(bitmap_font, "");
@@ -47,6 +49,7 @@ class Text {
 		this.padding = padding;
 	}
 
+	// Sets origin of current font instance
 	void setOrigin(int origin, float origin_x, float origin_y) {
 
 		this.origin = origin;
@@ -55,6 +58,12 @@ class Text {
 		this.updateOrigin();
 	}
 
+	/* Changes point of drawing for font:
+		Starting from point (0),
+		Ending at point(1),
+		Ending at + above previous line (2)
+		Starting from + above previous line (3)
+	 */
 	private void updateOrigin() {
 
 		switch(origin) {
@@ -81,6 +90,7 @@ class Text {
 		}
 	}
 
+	// Updates the line of text using current glyphLayout
 	void setText(CharSequence char_sequence, boolean override) {
 
 		if (override)
@@ -92,6 +102,7 @@ class Text {
 		this.updateOrigin();
 	}
 
+	// Create button of specified function (Play, exit etc)
 	void button(int button_type) {
 
 		button = true;
@@ -102,14 +113,22 @@ class Text {
 
 		if (button) {
 
+			// Check if cursor is within button (including padding)
 			cursor_over = y - height - padding < game.cursor.position.y && game.cursor.position.y < y + padding;
 
+			// Select text unless locked
 			if (!lock)
 				select = cursor_over;
 
+			// Click listener
 			if (cursor_over && Gdx.input.isTouched())
 				enter = true;
 
+			/* Select action based on button classification
+				Exit game (0)
+				Play game (1)
+				Back to main menu (2)
+			 */
 			if (enter)
 				switch (button_type) {
 
@@ -127,21 +146,25 @@ class Text {
 				}
 		}
 
+		// If text moused over, add "_" to text
 		if (select) {
 
 			this.setText(char_sequence + " _", false);
 
 		} else {
 
+			// Draw default text based on char sequence
 			this.setText(char_sequence, false);
 		}
 	}
 
 	void render(SpriteBatch sprite_batch) {
 
+		// Draw highlight if selected
 		if (select)
 			sprite_batch.draw(GAME_COLOR.get(1), 0, y - height - padding, GAME_WIDTH, height + padding * 2);
 
+		// Draw text over highlight (if any)
 		bitmap_font.draw(sprite_batch, glyph_layout, x, y);
 	}
 }

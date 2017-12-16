@@ -17,6 +17,7 @@ class TextList {
 	private float keyboard_timer;
 	private Text[] texts;
 
+	// (Variable number of arguments) Add padding to texts, choose longer text width available
 	TextList(Text... texts) {
 
 		this.texts = texts;
@@ -28,6 +29,7 @@ class TextList {
 		}
 	}
 
+	// Activate keyboard input
 	void keyboard() {
 
 		keyboard = true;
@@ -36,6 +38,12 @@ class TextList {
 			text.lock = true;
 	}
 
+	/* Changes point of drawing for text(s):
+		Starting from point (0),
+		Ending at point(1),
+		Ending at + above previous line (2)
+		Starting from + above previous line (3)
+	 */
 	void setOrigin(int origin, float origin_x, float origin_y) {
 
 		switch (origin) {
@@ -97,10 +105,12 @@ class TextList {
 			texts[keyboard_index].select = true;
 		}
 
+		// Continue parsing for inputs/mouse-overs on all 'Text-buttons'
 		for (Text text:texts)
 			text.update(game);
 	}
 
+	// Draw on screen all text(s) in TextList, including padding
 	void render(SpriteBatch sprite_batch) {
 
 		float height = 0;
