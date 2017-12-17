@@ -1,0 +1,89 @@
+
+power_up_1_animation.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Shield
+  rotate: false
+  xy: 1, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 1
+Shield
+  rotate: false
+  xy: 54, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 10
+Shield
+  rotate: false
+  xy: 107, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 11
+Shield
+  rotate: false
+  xy: 160, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 12
+Shield
+  rotate: false
+  xy: 213, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 2
+Shield
+  rotate: false
+  xy: 266, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 3
+Shield
+  rotate: false
+  xy: 319, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 4
+Shield
+  rotate: false
+  xy: 372, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 5
+Shield
+  rotate: false
+  xy: 425, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 6
+Shield
+  rotate: false
+  xy: 478, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 7
+Shield
+  rotate: false
+  xy: 531, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 8
+Shield
+  rotate: false
+  xy: 584, 1
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: 9
