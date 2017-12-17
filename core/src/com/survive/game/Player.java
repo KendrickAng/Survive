@@ -8,15 +8,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
 
-class Player {
+public class Player {
 
 	private static final int GYROSCOPE_SENSITIVITY = 4;
 	private static final int SPEED_SENSITIVITY = 10;
 	private static final int MAX_SPEED = 500;
 	private static final int KILLS_MULTIPLIER = 10;
 
-	float x;
-	float y;
+	public float x;
+	public float y;
 	private float height;
 	private float width;
 	private double rotation;

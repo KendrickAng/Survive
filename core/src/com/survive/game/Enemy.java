@@ -4,19 +4,20 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
-import static com.survive.game.EnemyPattern.SPAWN_TIMER;
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
 
 public class Enemy {
 
+	public static final int SPAWN_TIMER = 1;
 	private static final float BLINK_TIMER = 0.1f;
 	private static final int PLAYER_CHASE_SPEED = 80;
 
-	float x;
-	float y;
-	float speed;
-	double theta;
+	public float x;
+	public float y;
+	public float speed;
+	public double theta;
+
 	private float radius;
 	private boolean blink;
 	private boolean spawned;
@@ -25,7 +26,7 @@ public class Enemy {
 	private Sprite sprite;
 	private Circle hit_box;
 
-	Enemy(Sprite sprite) {
+	public Enemy(Sprite sprite) {
 
 		radius = sprite.getWidth()/2;
 		hit_box = new Circle(0, 0, 0);
@@ -33,7 +34,7 @@ public class Enemy {
 	}
 
 	// Add displacement per unit time in x and y direction
-	void move(float delta) {
+	public void move(float delta) {
 
 		if (spawned) {
 
@@ -42,7 +43,7 @@ public class Enemy {
 		}
 	}
 
-	void playerChase(GameScreen screen) {
+	public void chasePlayer(GameScreen screen) {
 
 		// Chase player
 		theta = Math.atan2(x - screen.player.x, screen.player.y - y);
