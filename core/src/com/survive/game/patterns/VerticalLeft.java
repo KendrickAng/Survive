@@ -2,19 +2,21 @@ package com.survive.game.patterns;
 
 import com.survive.game.Enemy;
 import com.survive.game.EnemyPattern;
-import com.survive.game.EnemyPatterns;
 
 import static com.survive.game.Enemy.SPAWN_TIMER;
+import static com.survive.game.EnemyPatternController.addRandomPattern;
+import static com.survive.game.EnemyPatternController.getSprite;
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
+import static com.survive.game.Screen.getDelta;
 
 public class VerticalLeft extends EnemyPattern {
 
 	private float x = SPAWN_PADDING;
 
-	public VerticalLeft(EnemyPatterns enemy_patterns, float delay) {
+	public VerticalLeft(float delay) {
 
-		super(enemy_patterns, delay);
+		super(delay);
 		this.SPAWN_COUNT = 8;
 		this.SPAWN_INTERVAL = 0.1f;
 		this.NEXT_PATTERN_DELAY = 2;
@@ -25,21 +27,21 @@ public class VerticalLeft extends EnemyPattern {
 	@Override
 	protected void spawn() {
 
-		Enemy enemy = new Enemy(enemy_patterns.sprite);
+		Enemy enemy = new Enemy(getSprite());
 		enemy.x = x;
 		enemy.y = SPAWN_PADDING + (MAP_HEIGHT - SPAWN_PADDING * 2) / (SPAWN_COUNT - 1) * spawned;
 		array.add(enemy);
 	}
 
 	@Override
-	protected void spawnDone() { enemy_patterns.addRandomPattern(NEXT_PATTERN_DELAY); }
+	protected void spawnDone() { addRandomPattern(NEXT_PATTERN_DELAY); }
 
 	@Override
 	protected void run() {
 
-		x += ENEMY_SPEED * enemy_patterns.screen.delta;
+		x += ENEMY_SPEED * getDelta();
 
-		if (x > MAP_WIDTH - enemy_patterns.sprite.getWidth() / 2) {
+		if (x > MAP_WIDTH - getSprite().getWidth() / 2) {
 
 			transfer();
 			dispose();

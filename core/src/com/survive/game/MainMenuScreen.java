@@ -1,42 +1,36 @@
 package com.survive.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.*;
 
-public class MainMenuScreen implements Screen {
+
+public class MainMenuScreen extends Screen {
 
     private static final int SCREEN_PADDING = 50;
 
-    private Survive game;
-    private Viewport viewport;
-	private SpriteBatch sprite_batch;
 	private Text title;
     private TextList options;
-    private Sprite player;
+    private Sprite player_sprite;
 
-    MainMenuScreen(Survive game) {
+	MainMenuScreen(Game game) {
+
+		super(game);
 
     	// Use same resources as game
-    	this.game = game;
-    	this.viewport = game.viewport;
-    	this.sprite_batch = game.sprite_batch;
-    	this.player = game.player;
+		player_sprite = getPlayerSprite();
 
     	// Game title
     	title = new Text(GAME_FONT.get(2), "SURVIVE");
     	title.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
 
     	// Set image beside game title
-		player.setPosition(SCREEN_PADDING * 2 + title.width, GAME_HEIGHT - SCREEN_PADDING - player.getHeight()/2);
-		player.setScale(2);
-		player.setRotation(45);
+		player_sprite.setPosition(SCREEN_PADDING * 2 + title.width, GAME_HEIGHT - SCREEN_PADDING - player_sprite.getHeight()/2);
+		player_sprite.setScale(2);
+		player_sprite.setRotation(45);
 
 		// Combine all InputProcessors
 		InputMultiplexer input_multiplexer = new InputMultiplexer();
@@ -44,13 +38,13 @@ public class MainMenuScreen implements Screen {
 		// bitmap_28.fnt for menu text. Button types can be found in Text
     	Text play = new Text(GAME_FONT.get(1), "PLAY");
     	play.setPadding(15);
-    	input_multiplexer.addProcessor(play.button(game, 1));
+    	input_multiplexer.addProcessor(play.button(GAME_SCREEN));
 		Text settings = new Text(GAME_FONT.get(1), "SETTINGS");
 		settings.setPadding(15);
-		input_multiplexer.addProcessor(settings.button(game, 3));
+		input_multiplexer.addProcessor(settings.button(SETTINGS_SCREEN));
     	Text exit = new Text(GAME_FONT.get(1), "EXIT");
     	exit.setPadding(15);
-    	input_multiplexer.addProcessor(exit.button(game, 0));
+    	input_multiplexer.addProcessor(exit.button(-1));
 
 		// Load custom text-buttons onto screen
 		options = new TextList(play, settings, exit);
@@ -60,30 +54,8 @@ public class MainMenuScreen implements Screen {
     	Gdx.input.setInputProcessor(input_multiplexer);
 	}
 
-
     @Override
     public void show() {}
-
-    @Override
-    public void render(float delta) {
-
-		// Update game resources
-    	game.platform.updateCursor(game);
-    	options.update(game, delta);
-
-    	// Render all game resources
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        sprite_batch.begin();
-		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
-		title.render(sprite_batch);
-		player.draw(sprite_batch);
-		options.render(sprite_batch);
-		game.platform.renderCursor(game);
-		sprite_batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) { viewport.update(width, height); }
 
     @Override
     public void pause() {}
@@ -96,4 +68,21 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {}
+
+	@Override
+	public void screenUpdate() {
+
+		getPlatform().updateCursor();
+		options.update();
+	}
+
+	@Override
+	public void screenRender() {
+
+		getSpriteBatch().draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
+		title.render();
+		player_sprite.draw(getSpriteBatch());
+		options.render();
+		Survive.getPlatform().renderCursor();
+	}
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import static com.survive.game.Survive.GAME_COLOR;
 import static com.survive.game.Survive.GAME_WIDTH;
+import static com.survive.game.Survive.getSpriteBatch;
 
 class Text {
 
@@ -105,15 +106,15 @@ class Text {
 	}
 
 	// Create button of specified function (Play, exit etc)
-	TextInputProcessor button(Survive game, int button_type) {
+	TextInputProcessor button(int button_type) {
 
 		this.button_type = button_type;
-		return new TextInputProcessor(game, this);
+		return new TextInputProcessor(this);
 	}
 
-	void update(Survive game, float delta) {
+	void update() {
 
-		blink_timer += delta;
+		blink_timer += Screen.getDelta();
 
 		if (blink_timer > BLINK_TIMER) {
 
@@ -127,34 +128,19 @@ class Text {
 		else
 			this.setText(char_sequence, false);
 
-		/* Select action based on button classification
-			Exit game (0)
-			Play game (1)
-			Back to main menu (2)
-			Settings (3)
-		 */
+		// Quick solution to setScreen for now
+		// TODO: Actions
+		// TODO: Text Classes
 		if (enter)
-			switch (button_type) {
+			if (button_type == -1)
+				Gdx.app.exit();
+			else
+				Screen.setScreen(button_type);
+	}
 
-				case 0:
-					Gdx.app.exit();
-					break;
+	void render() {
 
-				case 1:
-					game.setScreen(new GameScreen(game));
-					break;
-
-				case 2:
-					game.setScreen(new MainMenuScreen(game));
-					break;
-
-				case 3:
-					game.setScreen(new SettingsScreen(game));
-					break;
-			}
-		}
-
-	void render(SpriteBatch sprite_batch) {
+		SpriteBatch sprite_batch = getSpriteBatch();
 
 		// Draw highlight if selected
 		if (select)

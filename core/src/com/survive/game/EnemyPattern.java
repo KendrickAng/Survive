@@ -1,7 +1,8 @@
 package com.survive.game;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+
+import static com.survive.game.EnemyPatternController.getEnemyPatterns;
 
 public abstract class EnemyPattern {
 
@@ -15,12 +16,10 @@ public abstract class EnemyPattern {
 
 	protected int spawned;
 	protected float timer;
-	protected EnemyPatterns enemy_patterns;
 	protected Array<Enemy> array;
 
-	public EnemyPattern(EnemyPatterns enemy_patterns, float delay) {
+	public EnemyPattern(float delay) {
 
-		this.enemy_patterns = enemy_patterns;
 		this.timer = -delay;
 		array = new Array<Enemy>();
 	}
@@ -28,22 +27,22 @@ public abstract class EnemyPattern {
 	// Transfer enemies to CHASE_PLAYER pattern
 	protected void transfer() {
 
-		enemy_patterns.array.first().array.addAll(array);
+		getEnemyPatterns().first().array.addAll(array);
 		array.clear();
 	}
 
 	protected void dispose() {
 
-		enemy_patterns.array.removeValue(this, true);
+		getEnemyPatterns().removeValue(this, true);
 	}
 
 	protected abstract void spawn();
 	protected abstract void spawnDone();
 	protected abstract void run();
 
-	void render(SpriteBatch batch) {
+	void render() {
 
 		for (Enemy enemy:array)
-			enemy.render(batch);
+			enemy.render();
 	}
 }

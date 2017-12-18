@@ -1,7 +1,5 @@
 package com.survive.game;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 class TextList {
 
 	private float x;
@@ -63,15 +61,15 @@ class TextList {
 		}
 	}
 
-	void update(Survive game, float delta) {
+	void update() {
 
 		// Continue parsing for inputs/mouse-overs on all 'Text-buttons'
 		for (Text text:texts)
-			text.update(game, delta);
+			text.update();
 	}
 
 	// Draw on screen all text(s) in TextList, including padding
-	void render(SpriteBatch sprite_batch) {
+	void render() {
 
 		float height = 0;
 
@@ -80,7 +78,7 @@ class TextList {
 			height += text.padding;
 			text.setOrigin(0, x, y - height);
 			height += text.height + text.padding;
-			text.render(sprite_batch);
+			text.render();
 		}
 	}
 }

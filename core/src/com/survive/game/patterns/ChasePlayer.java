@@ -2,13 +2,12 @@ package com.survive.game.patterns;
 
 import com.survive.game.Enemy;
 import com.survive.game.EnemyPattern;
-import com.survive.game.EnemyPatterns;
 
 public class ChasePlayer extends EnemyPattern {
 
-	public ChasePlayer(EnemyPatterns enemy_patterns, float delay) {
+	public ChasePlayer(float delay) {
 
-		super(enemy_patterns, delay);
+		super(delay);
 	}
 
 	@Override
@@ -21,6 +20,6 @@ public class ChasePlayer extends EnemyPattern {
 	public void run() {
 
 		for (Enemy enemy:this.array)
-			enemy.chasePlayer(this.enemy_patterns.screen);
+			enemy.chasePlayer();
 	}
 }

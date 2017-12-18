@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import static com.survive.game.GameScreen.POWER_UP_TYPE_COUNT;
 import static com.survive.game.GameScreen.POWER_UP_TYPE_MIN_SPAWN_INTERVAL;
 import static com.survive.game.GameScreen.POWER_UP_TYPE_MAX_SPAWN_INTERVAL;
+import static com.survive.game.Screen.getDelta;
 
 public class PowerUpType {
 
@@ -37,14 +38,14 @@ public class PowerUpType {
 		this.type = type;
     }
 
-    void update(float delta, Player player) {
+    void update() {
 
 		if (spawn_interval == 0)
 			spawn_interval = (float) Math.random() * (max_spawn_interval - min_spawn_interval) + min_spawn_interval;
 
 		if (power_up_array.size < POWER_UP_TYPE_COUNT.get(type)) {
 
-    		timer += delta;
+    		timer += getDelta();
 
     		if (timer > spawn_interval) {
 
@@ -56,15 +57,15 @@ public class PowerUpType {
 
         for (PowerUp power_up : power_up_array) {
 
-			power_up.update(delta);
-			power_up.playerHitTest(player);
+			power_up.update();
+			power_up.playerHitTest();
 			power_up.dispose(power_up_array);
 		}
     }
 
-    void render(SpriteBatch batch) {
+    void render() {
 
         for (PowerUp power_up : power_up_array)
-        	power_up.render(batch);
+        	power_up.render();
     }
 }

@@ -5,12 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class TextInputProcessor implements InputProcessor {
 
-	private Survive game;
 	private Text text;
 
-	TextInputProcessor(Survive game, Text text) {
+	TextInputProcessor(Text text) {
 
-		this.game = game;
 		this.text = text;
 	}
 
@@ -75,7 +73,7 @@ public class TextInputProcessor implements InputProcessor {
 	private void updateTouch(int screenX, int screenY) {
 
 		Vector2 touch_position = new Vector2(screenX, screenY);
-		game.viewport.unproject(touch_position);
+		Survive.getViewport().unproject(touch_position);
 
 		// Check if touch is within button (including padding)
 		text.touched = text.y - text.height - text.padding < touch_position.y && touch_position.y < text.y + text.padding;

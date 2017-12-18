@@ -24,6 +24,6 @@ public class DesktopLauncher {
 
 		new LwjglApplication(new Survive(new DesktopPlatform()), config);
 
-		// TODO: Somehow restart the game.
+		// TODO: Somehow restart the game, in order to apply settings.
 	}
 }

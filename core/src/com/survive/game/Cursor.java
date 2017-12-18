@@ -2,7 +2,6 @@ package com.survive.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class Cursor {
@@ -20,15 +19,15 @@ public class Cursor {
 		position = new Vector2(0, 0);
 	}
 
-	void update(Survive game) {
+	void update() {
 
 		position.set(Gdx.input.getX(), Gdx.input.getY());
-		game.viewport.unproject(position);
+		Survive.getViewport().unproject(position);
 	}
 
-	void render(SpriteBatch sprite_batch) {
+	void render() {
 
 		sprite.setPosition(position.x - radius, position.y - radius);
-		sprite.draw(sprite_batch);
+		sprite.draw(Survive.getSpriteBatch());
 	}
 }

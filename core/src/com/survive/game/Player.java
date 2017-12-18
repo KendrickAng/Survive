@@ -3,10 +3,13 @@ package com.survive.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
+import static com.survive.game.Screen.GAME_OVER_SCREEN;
+import static com.survive.game.Screen.getDelta;
+import static com.survive.game.Survive.getCursor;
+import static com.survive.game.Survive.getSpriteBatch;
 
 public class Player {
 
@@ -49,13 +52,13 @@ public class Player {
 		this.sprite = sprite;
 	}
 
-	void update(Survive game, GameScreen screen) {
+	void update() {
 
-		time_alive += screen.delta;
+		time_alive += getDelta();
 		score = kills * KILLS_MULTIPLIER + (int) time_alive;
 
 		if (dead)
-			game.setScreen(new GameOverScreen(game, screen));
+			Screen.setScreen(GAME_OVER_SCREEN);
 
 		// For Android phones (gyroscope sensor)
 		if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
@@ -66,8 +69,9 @@ public class Player {
 		} else {
 
 			// Find cursor-player distance and angle from x-axis
-			offset_x = x - game.cursor.position.x;
-			offset_y = game.cursor.position.y - y;
+			Cursor cursor = getCursor();
+			offset_x = x - cursor.position.x;
+			offset_y = cursor.position.y - y;
 		}
 
 		// Re-calculate arc-tangent from north, moving counter-clockwise
@@ -83,8 +87,8 @@ public class Player {
 				speed = MAX_SPEED;
 
 			// Add displacement moved in one frame (x and y axis)
-			x -= Math.sin(rotation) * speed * screen.delta;
-			y += Math.cos(rotation) * speed * screen.delta;
+			x -= Math.sin(rotation) * speed * getDelta();
+			y += Math.cos(rotation) * speed * getDelta();
 		}
 
 		// Update player hit_box
@@ -108,11 +112,11 @@ public class Player {
 			y = MAP_HEIGHT - Math.max(y1 - y, y2 - y);
 	}
 
-	void render(SpriteBatch sprite_batch) {
+	void render() {
 
 		// Set player sprite positions
 		sprite.setPosition(x - width /2, y - height /2);
 		sprite.setRotation((float) Math.toDegrees(rotation));
-		sprite.draw(sprite_batch);
+		sprite.draw(getSpriteBatch());
 	}
 }
