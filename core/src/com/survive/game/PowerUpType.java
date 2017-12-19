@@ -28,8 +28,8 @@ public class PowerUpType {
 		power_up_array = new Array<PowerUp>();
 
 		sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("power_up_1_animation.atlas"));
-		animation = new Animation<TextureRegion>(0.033f, atlas.findRegions("Shield"));
+		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("power_up_0_animation.atlas"));
+		animation = new Animation<TextureRegion>(0.033f, atlas.findRegions("Explosion"));
 
 		min_spawn_interval = POWER_UP_TYPE_MIN_SPAWN_INTERVAL.get(type);
 		max_spawn_interval = POWER_UP_TYPE_MAX_SPAWN_INTERVAL.get(type);
