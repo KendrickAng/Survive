@@ -3,23 +3,23 @@ package com.survive.game;
 public class AndroidPlatform implements Platform {
 
 	@Override
-	public void updateSettings(Survive game) {
+	public void updateSettings() {
 
-		game.cursor.hidden = true;
+		Survive.getCursor().hidden = true;
 	}
 
 	// Don't display cursor if the setting is hidden.
 	@Override
-	public void updateCursor(Survive game) {
+	public void updateCursor() {
 
-		if (!game.cursor.hidden)
-			game.cursor.update(game);
+		if (!Survive.getCursor().hidden)
+			Survive.getCursor().update();
 	}
 
 	@Override
-	public void renderCursor(Survive game) {
+	public void renderCursor() {
 
-		if (!game.cursor.hidden)
-			game.cursor.render(game.sprite_batch);
+		if (!Survive.getCursor().hidden)
+			Survive.getCursor().render();
 	}
 }

@@ -40,15 +40,15 @@ public class Survive extends Game {
 		GAME_FONT_STRING.add("fonts/bitmap_35.fnt");
 	}
 
-	Platform platform;
-	Viewport viewport;
-	SpriteBatch sprite_batch;
-	Sprite player;
-	Cursor cursor;
+	private static Platform platform;
+	private static Viewport viewport;
+	private static SpriteBatch sprite_batch;
+	private static Sprite player_sprite;
+	private static Cursor cursor;
 
 	public Survive(Platform platform) {
 
-		this.platform = platform;
+		Survive.platform = platform;
 	}
 
 	@Override
@@ -81,16 +81,16 @@ public class Survive extends Game {
 		sprite_batch.setProjectionMatrix(camera.combined);
 
 		// Initialise Player Sprite
-		player = new Sprite(new Texture("player.bmp"));
+		player_sprite = new Sprite(new Texture("player.bmp"));
 
 		// Initialise Cursor
 		cursor = new Cursor(new Sprite(new Texture("cursor.bmp")));
 
 		// Update Game Settings
-		platform.updateSettings(this);
+		platform.updateSettings();
 
 		// Set Screen to MainMenuScreen
-		this.setScreen(new MainMenuScreen(this));
+		setScreen(new MainMenuScreen(this));
 
 		// Don't restrict cursor to screen boundaries
 		Gdx.input.setCursorCatched(true);
@@ -105,4 +105,10 @@ public class Survive extends Game {
 
 		sprite_batch.dispose();
 	}
+
+	static Platform getPlatform() { return platform; }
+	static Viewport getViewport() { return viewport; }
+	static SpriteBatch getSpriteBatch() { return sprite_batch; }
+	static Cursor getCursor() { return cursor; }
+	static Sprite getPlayerSprite() { return player_sprite; }
 }

@@ -3,17 +3,17 @@ package com.survive.game;
 public class DesktopPlatform implements Platform {
 
 	@Override
-	public void updateSettings(Survive game) {}
+	public void updateSettings() {}
 
 	@Override
-	public void updateCursor(Survive game) {
+	public void updateCursor() {
 
-		game.cursor.update(game);
+		Survive.getCursor().update();
 	}
 
 	@Override
-	public void renderCursor(Survive game) {
+	public void renderCursor() {
 
-		game.cursor.render(game.sprite_batch);
+		Survive.getCursor().render();
 	}
 }

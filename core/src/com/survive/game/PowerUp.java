@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
+import static com.survive.game.Screen.getDelta;
 
 public class PowerUp {
 
@@ -52,18 +53,18 @@ public class PowerUp {
         this.animation = animation;
     }
 
-    void update(float delta) {
+    void update() {
 
     	if (triggered) {
 
-			animation_time += delta;
+			animation_time += getDelta();
 			radius = animation.getKeyFrame(animation_time, false).getRegionWidth() / 2;
 
 		} else {
 
-			x -= x_speed * delta;
-			y += y_speed * delta;
-			rotation += rotation_speed * delta;
+			x -= x_speed * getDelta();
+			y += y_speed * getDelta();
+			rotation += rotation_speed * getDelta();
 
 			// Bounce on map boundaries
 			if (x < radius || x > MAP_WIDTH - radius)
@@ -76,23 +77,25 @@ public class PowerUp {
 		hit_box.set(x, y, radius);
     }
 
-	void playerHitTest(Player player) {
+	void playerHitTest() {
 
-		if (!triggered && player.hit_box.intersectCircle(hit_box))
+		if (!triggered && GameScreen.getPlayer().hit_box.intersectCircle(hit_box))
 			triggered = true;
 	}
 
-    void render(SpriteBatch batch)  {
+    void render()  {
+
+		SpriteBatch sprite_batch = Survive.getSpriteBatch();
 
     	if (triggered) {
 
-    		batch.draw(animation.getKeyFrame(animation_time, false), x - radius, y - radius);
+    		sprite_batch.draw(animation.getKeyFrame(animation_time, false), x - radius, y - radius);
 
 		} else {
 
     		sprite.setRotation((float) Math.toDegrees(rotation));
 			sprite.setPosition(x - radius, y - radius);
-			sprite.draw(batch);
+			sprite.draw(sprite_batch);
     	}
     }
 

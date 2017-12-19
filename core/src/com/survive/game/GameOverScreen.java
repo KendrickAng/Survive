@@ -1,39 +1,33 @@
 package com.survive.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.*;
 
-public class GameOverScreen implements Screen {
+public class GameOverScreen extends Screen {
 
 	private static final int SCREEN_PADDING = 50;
 
-	private Survive game;
-	private Viewport viewport;
-	private SpriteBatch sprite_batch;
 	private Text title;
 	private TextList information;
 	private TextList options;
 
-	GameOverScreen(Survive game, GameScreen screen) {
+	GameOverScreen(Game game) {
 
-		this.game = game;
-		this.viewport = game.viewport;
-		this.sprite_batch = game.sprite_batch;
+		super(game);
 
 		title = new Text(GAME_FONT.get(2), "GAME OVER");
 		title.setOrigin(0, SCREEN_PADDING, GAME_HEIGHT - SCREEN_PADDING);
 
-		Text kills = new Text(GAME_FONT.get(0), "KILLS: " + String.valueOf(screen.player.kills));
+		Player player = GameScreen.getPlayer();
+
+		Text kills = new Text(GAME_FONT.get(0), "KILLS: " + String.valueOf(player.kills));
 		kills.setPadding(5);
-		Text time_alive = new Text(GAME_FONT.get(0), "TIME: " + String.valueOf((int) screen.player.time_alive));
+		Text time_alive = new Text(GAME_FONT.get(0), "TIME: " + String.valueOf((int) player.time_alive));
 		time_alive.setPadding(5);
-		Text score = new Text(GAME_FONT.get(0), "SCORE: " + String.valueOf(screen.player.score));
+		Text score = new Text(GAME_FONT.get(0), "SCORE: " + String.valueOf(player.score));
 		score.setPadding(5);
 
 		information = new TextList(kills, time_alive, score);
@@ -44,10 +38,10 @@ public class GameOverScreen implements Screen {
 
 		Text restart = new Text(GAME_FONT.get(1), "RESTART");
 		restart.setPadding(15);
-		input_multiplexer.addProcessor(restart.button(game, 1));
+		input_multiplexer.addProcessor(restart.button(GAME_SCREEN));
 		Text back = new Text(GAME_FONT.get(1), "BACK");
 		back.setPadding(15);
-		input_multiplexer.addProcessor(back.button(game, 2));
+		input_multiplexer.addProcessor(back.button(MAIN_MENU_SCREEN));
 
 		// Create Text list for GameOverScreen, enable interaction
 		options = new TextList(restart, back);
@@ -61,27 +55,6 @@ public class GameOverScreen implements Screen {
 	public void show() {}
 
 	@Override
-	public void render(float delta) {
-
-		// Update
-		game.platform.updateCursor(game);
-		options.update(game, delta);
-
-		// Render
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		sprite_batch.begin();
-		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
-		title.render(sprite_batch);
-		information.render(sprite_batch);
-		options.render(sprite_batch);
-		game.platform.renderCursor(game);
-		sprite_batch.end();
-	}
-
-	@Override
-	public void resize(int width, int height) { viewport.update(width, height); }
-
-	@Override
 	public void pause() {}
 
 	@Override
@@ -92,4 +65,21 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void dispose() {}
+
+	@Override
+	public void screenUpdate() {
+
+		getPlatform().updateCursor();
+		options.update();
+	}
+
+	@Override
+	public void screenRender() {
+
+		getSpriteBatch().draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
+		title.render();
+		information.render();
+		options.render();
+		getPlatform().renderCursor();
+	}
 }

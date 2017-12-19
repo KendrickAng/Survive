@@ -1,22 +1,21 @@
 package com.survive.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
-import static com.survive.game.EnemyPattern.SPAWN_TIMER;
-import static com.survive.game.GameScreen.MAP_HEIGHT;
-import static com.survive.game.GameScreen.MAP_WIDTH;
+import static com.survive.game.GameScreen.*;
 
 public class Enemy {
 
+	public static final int SPAWN_TIMER = 1;
 	private static final float BLINK_TIMER = 0.1f;
 	private static final int PLAYER_CHASE_SPEED = 80;
 
-	float x;
-	float y;
-	float speed;
-	double theta;
+	public float x;
+	public float y;
+	public float speed;
+	public double theta;
+
 	private float radius;
 	private boolean blink;
 	private boolean spawned;
@@ -25,7 +24,7 @@ public class Enemy {
 	private Sprite sprite;
 	private Circle hit_box;
 
-	Enemy(Sprite sprite) {
+	public Enemy(Sprite sprite) {
 
 		radius = sprite.getWidth()/2;
 		hit_box = new Circle(0, 0, 0);
@@ -33,24 +32,24 @@ public class Enemy {
 	}
 
 	// Add displacement per unit time in x and y direction
-	void move(float delta) {
+	public void move() {
 
 		if (spawned) {
 
-			x -= Math.sin(theta) * speed * delta;
-			y += Math.cos(theta) * speed * delta;
+			x -= Math.sin(theta) * speed * getDelta();
+			y += Math.cos(theta) * speed * getDelta();
 		}
 	}
 
-	void playerChase(GameScreen screen) {
+	public void chasePlayer() {
 
 		// Chase player
-		theta = Math.atan2(x - screen.player.x, screen.player.y - y);
+		theta = Math.atan2(x - getPlayer().x, getPlayer().y - y);
 		speed = PLAYER_CHASE_SPEED;
-		move(screen.delta);
+		move();
 	}
 
-	void update(float delta) {
+	void update() {
 
 		// Keep enemy within screen
 		if (x < radius)
@@ -69,8 +68,8 @@ public class Enemy {
 
 		if (!spawned) {
 
-			blink_timer += delta;
-			spawn_timer += delta;
+			blink_timer += getDelta();
+			spawn_timer += getDelta();
 
 			if (blink_timer > BLINK_TIMER) {
 
@@ -83,24 +82,24 @@ public class Enemy {
 		}
 	}
 
-	void playerHitTest(Player player) {
+	void playerHitTest() {
 
-		if (spawned && player.hit_box.intersectCircle(hit_box))
-			player.dead = true;
+		if (spawned && getPlayer().hit_box.intersectCircle(hit_box))
+			getPlayer().dead = true;
 	}
 
-	void powerUpHitTest(GameScreen screen, Array<Enemy> enemy_array) {
+	void powerUpHitTest(Array<Enemy> enemy_array) {
 
-		for (PowerUpType power_up_type:screen.power_up_types)
+		for (PowerUpType power_up_type:getPowerUpTypes())
 			for (PowerUp power_up:power_up_type.power_up_array)
 				if (power_up.triggered && power_up.hit_box.intersectCircle(hit_box)) {
 
-					screen.player.kills ++;
+					getPlayer().kills ++;
 					enemy_array.removeValue(this, true);
 				}
 	}
 
-	void render(SpriteBatch batch) {
+	void render() {
 
 		sprite.setAlpha(0.1f);
 
@@ -111,6 +110,6 @@ public class Enemy {
 			sprite.setAlpha(1);
 
 		sprite.setPosition(x - radius, y - radius);
-		sprite.draw(batch);
+		sprite.draw(Survive.getSpriteBatch());
 	}
 }

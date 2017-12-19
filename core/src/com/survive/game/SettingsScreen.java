@@ -1,26 +1,21 @@
 package com.survive.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import static com.survive.game.Survive.*;
 
-class SettingsScreen implements Screen {
+class SettingsScreen extends Screen {
 
 	private static final int SCREEN_PADDING = 50;
 
-	private Survive game;
-	private SpriteBatch sprite_batch;
 	private Text title;
 	private TextList options;
 
-	SettingsScreen(Survive game) {
+	SettingsScreen(Game game) {
 
-		this.game = game;
-		this.sprite_batch = game.sprite_batch;
+		super(game);
 
 		// Title
 		title = new Text(GAME_FONT.get(2), "SETTINGS");
@@ -31,7 +26,7 @@ class SettingsScreen implements Screen {
 
 		Text back = new Text(GAME_FONT.get(1), "BACK");
 		back.setPadding(15);
-		input_multiplexer.addProcessor(back.button(game, 2));
+		input_multiplexer.addProcessor(back.button(MAIN_MENU_SCREEN));
 
 		options = new TextList(back);
 		options.setOrigin(3, SCREEN_PADDING, SCREEN_PADDING);
@@ -44,26 +39,6 @@ class SettingsScreen implements Screen {
 	public void show() {}
 
 	@Override
-	public void render(float delta) {
-
-    	// Update
-    	game.platform.updateCursor(game);
-    	options.update(game, delta);
-
-    	// Render
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        sprite_batch.begin();
-		sprite_batch.draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
-		title.render(sprite_batch);
-		options.render(sprite_batch);
-		game.platform.renderCursor(game);
-		sprite_batch.end();
-	}
-
-	@Override
-	public void resize(int width, int height) { game.viewport.update(width, height); }
-
-	@Override
 	public void pause() {}
 
 	@Override
@@ -74,4 +49,20 @@ class SettingsScreen implements Screen {
 
 	@Override
 	public void dispose() {}
+
+	@Override
+	public void screenUpdate() {
+
+		getPlatform().updateCursor();
+		options.update();
+	}
+
+	@Override
+	public void screenRender() {
+
+		getSpriteBatch().draw(GAME_COLOR.get(0), 0, 0, GAME_WIDTH, GAME_HEIGHT);
+		title.render();
+		options.render();
+		getPlatform().renderCursor();
+	}
 }
