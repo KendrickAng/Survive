@@ -30,7 +30,7 @@ public class VerticalLeft extends EnemyPattern {
 		Enemy enemy = new Enemy(getSprite());
 		enemy.x = x;
 		enemy.y = SPAWN_PADDING + (MAP_HEIGHT - SPAWN_PADDING * 2) / (SPAWN_COUNT - 1) * spawned;
-		array.add(enemy);
+		getArray().add(enemy);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class VerticalLeft extends EnemyPattern {
 			dispose();
 		}
 
-		for (Enemy enemy : array)
+		for (Enemy enemy:getArray())
 			enemy.x = x;
 	}
 }

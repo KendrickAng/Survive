@@ -28,7 +28,7 @@ public class CirclePlayer extends EnemyPattern {
 	protected void spawn() {
 
 		if (player_position == null)
-			player_position = new Vector2(getPlayer().x, getPlayer().y);
+			player_position = new Vector2(getPlayer().getX(), getPlayer().getY());
 
 		double theta = Math.PI*2/SPAWN_COUNT * spawned;
 
@@ -37,7 +37,7 @@ public class CirclePlayer extends EnemyPattern {
 		enemy.y = this.player_position.y + (float) Math.cos(theta) * SPAWN_DISTANCE;
 		enemy.theta = Math.PI - theta;
 		enemy.speed = ENEMY_SPEED;
-		array.add(enemy);
+		getArray().add(enemy);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class CirclePlayer extends EnemyPattern {
 			dispose();
 		}
 
-		for (Enemy enemy:array)
+		for (Enemy enemy:getArray())
 			enemy.move();
 	}
 }

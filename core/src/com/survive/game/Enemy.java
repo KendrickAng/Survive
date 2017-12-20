@@ -1,7 +1,6 @@
 package com.survive.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.*;
 
@@ -44,7 +43,7 @@ public class Enemy {
 	public void chasePlayer() {
 
 		// Chase player
-		theta = Math.atan2(x - getPlayer().x, getPlayer().y - y);
+		theta = Math.atan2(x - getPlayer().getX(), getPlayer().getY() - y);
 		speed = PLAYER_CHASE_SPEED;
 		move();
 	}
@@ -88,17 +87,6 @@ public class Enemy {
 			getPlayer().dead = true;
 	}
 
-	void powerUpHitTest(Array<Enemy> enemy_array) {
-
-		for (PowerUpType power_up_type:getPowerUpTypes())
-			for (PowerUp power_up:power_up_type.power_up_array)
-				if (power_up.triggered && power_up.hit_box.intersectCircle(hit_box)) {
-
-					getPlayer().kills ++;
-					enemy_array.removeValue(this, true);
-				}
-	}
-
 	void render() {
 
 		sprite.setAlpha(0.1f);
@@ -112,4 +100,6 @@ public class Enemy {
 		sprite.setPosition(x - radius, y - radius);
 		sprite.draw(Survive.getSpriteBatch());
 	}
+	public Circle getHitBox() { return hit_box; }
+	public boolean isSpawned() { return spawned; }
 }

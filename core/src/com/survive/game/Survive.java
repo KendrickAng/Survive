@@ -108,7 +108,7 @@ public class Survive extends Game {
 
 	static Platform getPlatform() { return platform; }
 	static Viewport getViewport() { return viewport; }
-	static SpriteBatch getSpriteBatch() { return sprite_batch; }
+	public static SpriteBatch getSpriteBatch() { return sprite_batch; }
 	static Cursor getCursor() { return cursor; }
 	static Sprite getPlayerSprite() { return player_sprite; }
 }

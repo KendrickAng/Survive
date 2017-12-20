@@ -3,6 +3,7 @@ package com.survive.game;
 import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.EnemyPatternController.getEnemyPatterns;
+import static com.survive.game.Screen.getDelta;
 
 public abstract class EnemyPattern {
 
@@ -16,9 +17,9 @@ public abstract class EnemyPattern {
 
 	protected int spawned;
 	protected float timer;
-	protected Array<Enemy> array;
+	private Array<Enemy> array;
 
-	public EnemyPattern(float delay) {
+	protected EnemyPattern(float delay) {
 
 		this.timer = -delay;
 		array = new Array<Enemy>();
@@ -40,9 +41,45 @@ public abstract class EnemyPattern {
 	protected abstract void spawnDone();
 	protected abstract void run();
 
+	void update() {
+
+		timer += getDelta();
+
+		if (spawned < SPAWN_COUNT) {
+
+			if (timer > SPAWN_INTERVAL) {
+
+				spawn();
+
+				spawned ++;
+				timer -= SPAWN_INTERVAL;
+
+				if (spawned == SPAWN_COUNT) {
+
+					spawnDone();
+					timer = -RUN_DELAY;
+				}
+			}
+
+		} else {
+
+			if (timer > 0)
+				run();
+		}
+
+		for (Enemy enemy:array) {
+
+			enemy.update();
+			enemy.playerHitTest();
+		}
+	}
+
 	void render() {
 
 		for (Enemy enemy:array)
 			enemy.render();
 	}
+
+	public Array<Enemy> getArray() { return array; }
+	public void disposeEnemy(Enemy enemy) { array.removeValue(enemy, true);	}
 }

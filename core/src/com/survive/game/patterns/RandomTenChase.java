@@ -24,7 +24,7 @@ public class RandomTenChase extends EnemyPattern {
 		Enemy enemy = new Enemy(getSprite());
 		enemy.x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
 		enemy.y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
-		array.add(enemy);
+		getArray().add(enemy);
 		transfer();
 	}
 

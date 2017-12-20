@@ -1,18 +1,20 @@
 package com.survive.game;
 
+
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
 import static com.survive.game.GameScreen.MAP_WIDTH;
+import static com.survive.game.GameScreen.getPlayer;
 import static com.survive.game.Screen.getDelta;
+import static com.survive.game.Survive.getSpriteBatch;
 
 public class PowerUp {
 
-    private static final float SPEED = 10;
+	private static final float SPEED = 10;
     private static final float ROTATION_SPEED = 1;
     private static final float SPAWN_PADDING = 50;
 
@@ -23,19 +25,21 @@ public class PowerUp {
     private double rotation_speed;
     private double x_speed;
     private double y_speed;
-    private float animation_time;
-    private Sprite sprite;
-    private Animation<TextureRegion> animation;
+	private Circle hit_box;
+	private Sprite sprite;
 
-	boolean triggered;
-	Circle hit_box;
+	private int animation_index = -1;
+	private float animation_time;
+	private Array<Animation<TextureRegion>> animation_array;
 
-	PowerUp(Sprite sprite, Animation<TextureRegion> animation) {
+	PowerUp() {
 
-        // Spawn within map boundaries
+		animation_array = new Array<Animation<TextureRegion>>();
+		hit_box = new Circle();
+
+		// Spawn within map boundaries
         x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
         y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
-		radius = sprite.getWidth()/2;
 
         // Init Speed & Rotation
         double theta = Math.random() * 2 * Math.PI;
@@ -44,64 +48,49 @@ public class PowerUp {
         rotation_speed = Math.random() * ROTATION_SPEED;
         x_speed = Math.sin(theta) * speed;
         y_speed = Math.cos(theta) * speed;
-
-        animation_time = 0;
-        triggered = false;
-		hit_box = new Circle(0, 0, 0);
-
-        this.sprite = sprite;
-        this.animation = animation;
     }
 
-    void update() {
+    void updateIcon() {
 
-    	if (triggered) {
+		x -= x_speed * getDelta();
+		y += y_speed * getDelta();
+		rotation += rotation_speed * getDelta();
 
-			animation_time += getDelta();
-			radius = animation.getKeyFrame(animation_time, false).getRegionWidth() / 2;
+		// Bounce on map boundaries
+		if (x < radius || x > MAP_WIDTH - radius)
+			x_speed = -x_speed;
 
-		} else {
-
-			x -= x_speed * getDelta();
-			y += y_speed * getDelta();
-			rotation += rotation_speed * getDelta();
-
-			// Bounce on map boundaries
-			if (x < radius || x > MAP_WIDTH - radius)
-				x_speed = -x_speed;
-
-			else if (y < radius || y > MAP_HEIGHT - radius)
-				y_speed = -y_speed;
-		}
+		else if (y < radius || y > MAP_HEIGHT - radius)
+			y_speed = -y_speed;
 
 		hit_box.set(x, y, radius);
-    }
 
-	void playerHitTest() {
-
-		if (!triggered && GameScreen.getPlayer().hit_box.intersectCircle(hit_box))
-			triggered = true;
+		if (getPlayer().hit_box.intersectCircle(hit_box))
+			nextAnimation();
 	}
 
-    void render()  {
+    void renderIcon() {
 
-		SpriteBatch sprite_batch = Survive.getSpriteBatch();
-
-    	if (triggered) {
-
-    		sprite_batch.draw(animation.getKeyFrame(animation_time, false), x - radius, y - radius);
-
-		} else {
-
-    		sprite.setRotation((float) Math.toDegrees(rotation));
-			sprite.setPosition(x - radius, y - radius);
-			sprite.draw(sprite_batch);
-    	}
+		sprite.setRotation((float) Math.toDegrees(rotation));
+		sprite.setPosition(x - radius, y - radius);
+		sprite.draw(getSpriteBatch());
     }
 
-    void dispose(Array<PowerUp> power_up_array) {
+    void setIcon(Sprite sprite) {
 
-		if (animation_time > animation.getAnimationDuration())
-			power_up_array.removeValue(this, true);
+		this.sprite = sprite;
+		this.radius = sprite.getWidth()/2;
 	}
+
+	void addAnimation(Animation<TextureRegion> animation) { animation_array.add(animation); }
+	public int getIndex() { return animation_index; }
+	public Animation<TextureRegion> getAnimation() { return animation_array.get(animation_index); }
+    public void nextAnimation() { animation_index ++; }
+    public float getTimer() { return animation_time; }
+	public void addTimer() { animation_time += getDelta(); }
+	public void resetTimer() { animation_time = 0; }
+    public float getX() { return x; }
+    public float getY() { return y; }
+	public void setX(float x) { this.x = x; }
+	public void setY(float y) { this.y = y; }
 }

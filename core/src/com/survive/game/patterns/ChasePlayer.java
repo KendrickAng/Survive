@@ -19,7 +19,7 @@ public class ChasePlayer extends EnemyPattern {
 	@Override
 	public void run() {
 
-		for (Enemy enemy:this.array)
+		for (Enemy enemy:getArray())
 			enemy.chasePlayer();
 	}
 }

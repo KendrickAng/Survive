@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.survive.game.Survive.*;
@@ -19,29 +18,11 @@ public class GameScreen extends Screen {
 	public static final int MAP_HEIGHT = GAME_HEIGHT - DOCK_HEIGHT;
 	public static final int MAP_WIDTH = GAME_WIDTH;
 
-	// Define item (powerup) constants
-	static final Array<Integer> POWER_UP_TYPE_COUNT = new Array<Integer>();
-	static final Array<Integer> POWER_UP_TYPE_MIN_SPAWN_INTERVAL = new Array<Integer>();
-	static final Array<Integer> POWER_UP_TYPE_MAX_SPAWN_INTERVAL = new Array<Integer>();
-
-	static {
-
-		POWER_UP_TYPE_COUNT.add(3);
-		POWER_UP_TYPE_COUNT.add(1);
-
-		POWER_UP_TYPE_MIN_SPAWN_INTERVAL.add(3);
-		POWER_UP_TYPE_MIN_SPAWN_INTERVAL.add(7);
-
-		POWER_UP_TYPE_MAX_SPAWN_INTERVAL.add(10);
-		POWER_UP_TYPE_MAX_SPAWN_INTERVAL.add(20);
-	}
-
 	private static Player player;
-	private static Array<PowerUpType> power_up_types;
+	private static PowerUpTypeController power_up_controller;
 	private static EnemyPatternController enemy_controller;
 	private Text score;
 	private Text fps;
-
 
 	GameScreen(Game game) {
 
@@ -51,11 +32,7 @@ public class GameScreen extends Screen {
 		player = new Player(new Sprite(new Texture("player.bmp")));
 
 		// Init Power Up Types
-		// TODO: PowerUpController
-		power_up_types = new Array<PowerUpType>();
-		
-		for (int i = 0; i < 1; i ++)
-			power_up_types.add(new PowerUpType(i));
+		power_up_controller = new PowerUpTypeController();
 
 		// Init Enemy Patterns
 		enemy_controller = new EnemyPatternController();
@@ -93,11 +70,8 @@ public class GameScreen extends Screen {
 
 		// Update game instance
 		getPlatform().updateCursor();
+		power_up_controller.update();
 		player.update();
-
-		for (PowerUpType power_up_type:power_up_types)
-			power_up_type.update();
-
 		enemy_controller.update();
 
 		score.setText("SCORE: " + String.valueOf(player.score), true);
@@ -112,9 +86,7 @@ public class GameScreen extends Screen {
 		getSpriteBatch().draw(GAME_COLOR.get(1), 0, MAP_HEIGHT, MAP_WIDTH, DOCK_HEIGHT);
 		getSpriteBatch().enableBlending();
 
-		for (PowerUpType power_up_type:power_up_types)
-			power_up_type.render();
-
+		power_up_controller.render();
 		player.render();
 		enemy_controller.render();
 		score.render();
@@ -123,5 +95,4 @@ public class GameScreen extends Screen {
 	}
 
 	public static Player getPlayer() { return player; }
-	static Array<PowerUpType> getPowerUpTypes() { return power_up_types; }
 }

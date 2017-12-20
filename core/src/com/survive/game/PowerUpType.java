@@ -2,70 +2,88 @@ package com.survive.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-import static com.survive.game.GameScreen.POWER_UP_TYPE_COUNT;
-import static com.survive.game.GameScreen.POWER_UP_TYPE_MIN_SPAWN_INTERVAL;
-import static com.survive.game.GameScreen.POWER_UP_TYPE_MAX_SPAWN_INTERVAL;
 import static com.survive.game.Screen.getDelta;
 
-public class PowerUpType {
+public abstract class PowerUpType {
 
-    private int type;
+	protected float MIN_INTERVAL;
+	protected float MAX_INTERVAL;
+	protected int COUNT;
+
     private float timer;
-	private int max_spawn_interval;
-	private int min_spawn_interval;
-    private float spawn_interval;
-    private Sprite sprite;
-	private Animation<TextureRegion> animation;
+	private float spawn_interval;
+    private Sprite icon;
 
-	Array<PowerUp> power_up_array;
+	private Array<PowerUp> power_up_array;
+	private Array<Animation<TextureRegion>> animation_array;
 
-	PowerUpType(int type) {
+	protected PowerUpType() {
 
-    	timer = 0;
-    	spawn_interval = 0;
 		power_up_array = new Array<PowerUp>();
-
-		sprite = new Sprite(new Texture("power_up_" + type + ".bmp"));
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("power_up_1_animation.atlas"));
-		animation = new Animation<TextureRegion>(0.033f, atlas.findRegions("Shield"));
-
-		min_spawn_interval = POWER_UP_TYPE_MIN_SPAWN_INTERVAL.get(type);
-		max_spawn_interval = POWER_UP_TYPE_MAX_SPAWN_INTERVAL.get(type);
-
-		this.type = type;
-    }
+		animation_array = new Array<Animation<TextureRegion>>();
+	}
 
     void update() {
 
-		if (spawn_interval == 0)
-			spawn_interval = (float) Math.random() * (max_spawn_interval - min_spawn_interval) + min_spawn_interval;
-
-		if (power_up_array.size < POWER_UP_TYPE_COUNT.get(type)) {
+		if (power_up_array.size < COUNT) {
 
     		timer += getDelta();
 
     		if (timer > spawn_interval) {
 
-				power_up_array.add(new PowerUp(sprite, animation));
+    			PowerUp power_up = new PowerUp();
+    			power_up.setIcon(icon);
+
+				for (Animation<TextureRegion> animation:animation_array)
+					power_up.addAnimation(animation);
+
+				power_up_array.add(power_up);
+				spawn_interval = (float) Math.random() * (MAX_INTERVAL - MIN_INTERVAL) + MIN_INTERVAL;
 				timer = 0;
-				spawn_interval = 0;
 			}
 		}
 
-        for (PowerUp power_up : power_up_array) {
+        for (PowerUp power_up:power_up_array) {
 
-			power_up.update();
-			power_up.playerHitTest();
-			power_up.dispose(power_up_array);
+			int index = power_up.getIndex();
+
+			if (index == -1)
+				power_up.updateIcon();
+
+			if (index >= 0)
+				updateAnimation(power_up);
 		}
     }
 
     void render() {
 
-        for (PowerUp power_up : power_up_array)
-        	power_up.render();
+        for (PowerUp power_up:power_up_array) {
+
+			int index = power_up.getIndex();
+
+			if (index == -1)
+				power_up.renderIcon();
+
+			if (index >= 0)
+				renderAnimation(power_up);
+		}
     }
+
+    protected abstract void updateAnimation(PowerUp power_up);
+	protected abstract void renderAnimation(PowerUp power_up);
+
+	protected void setIcon(String string) { this.icon = new Sprite(new Texture(string)); }
+	protected void addAnimation(String string) {
+
+		TextureAtlas texture_atlas = new TextureAtlas(Gdx.files.internal(string));
+		Animation<TextureRegion> animation = new Animation<TextureRegion>(0.033f, texture_atlas.getRegions());
+		animation_array.add(animation);
+	}
+	protected void dispose(PowerUp power_up) { power_up_array.removeValue(power_up, true); }
 }

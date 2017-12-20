@@ -18,8 +18,8 @@ public class Player {
 	private static final int MAX_SPEED = 500;
 	private static final int KILLS_MULTIPLIER = 10;
 
-	public float x;
-	public float y;
+	private float x;
+	private float y;
 	private float height;
 	private float width;
 	private double rotation;
@@ -119,4 +119,8 @@ public class Player {
 		sprite.setRotation((float) Math.toDegrees(rotation));
 		sprite.draw(getSpriteBatch());
 	}
+
+	public void addKills() { kills ++; }
+	public float getX() { return x; }
+	public float getY() { return y; }
 }

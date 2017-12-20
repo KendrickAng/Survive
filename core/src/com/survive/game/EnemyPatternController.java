@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.survive.game.patterns.*;
 
-import static com.survive.game.Screen.getDelta;
-
 public class EnemyPatternController {
 
 	private static final int CHASE_PLAYER = 0;
@@ -33,47 +31,8 @@ public class EnemyPatternController {
 
 	void update() {
 
-		for(EnemyPattern enemy_pattern:array) {
-
-			int SPAWN_COUNT = enemy_pattern.SPAWN_COUNT;
-			float SPAWN_INTERVAL = enemy_pattern.SPAWN_INTERVAL;
-			float RUN_DELAY = enemy_pattern.RUN_DELAY;
-
-			int spawned = enemy_pattern.spawned;
-			float timer = enemy_pattern.timer + getDelta();
-
-			if (spawned < SPAWN_COUNT) {
-
-				if (timer > SPAWN_INTERVAL) {
-
-					enemy_pattern.spawn();
-
-					spawned ++;
-					timer -= SPAWN_INTERVAL;
-
-					if (spawned == SPAWN_COUNT) {
-
-						enemy_pattern.spawnDone();
-						timer = -RUN_DELAY;
-					}
-				}
-
-			} else {
-
-				if (timer > 0)
-					enemy_pattern.run();
-			}
-
-			enemy_pattern.spawned = spawned;
-			enemy_pattern.timer = timer;
-
-			for (Enemy enemy:enemy_pattern.array) {
-
-				enemy.update();
-				enemy.powerUpHitTest(enemy_pattern.array);
-				enemy.playerHitTest();
-			}
-		}
+		for(EnemyPattern enemy_pattern:array)
+			enemy_pattern.update();
 	}
 
 	void render() {
@@ -124,5 +83,5 @@ public class EnemyPatternController {
 	}
 
 	public static Sprite getSprite() { return sprite; }
-	static Array<EnemyPattern> getEnemyPatterns() { return array; }
+	public static Array<EnemyPattern> getEnemyPatterns() { return array; }
 }

@@ -30,7 +30,7 @@ public class HorizontalBottom extends EnemyPattern {
 		Enemy enemy = new Enemy(getSprite());
 		enemy.x = SPAWN_PADDING + (MAP_WIDTH - SPAWN_PADDING * 2) / (SPAWN_COUNT - 1) * spawned;
 		enemy.y = y;
-		array.add(enemy);
+		getArray().add(enemy);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class HorizontalBottom extends EnemyPattern {
 			dispose();
 		}
 
-		for (Enemy enemy:array)
+		for (Enemy enemy:getArray())
 			enemy.y = y;
 	}
 }

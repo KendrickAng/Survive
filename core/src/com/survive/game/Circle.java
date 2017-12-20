@@ -6,7 +6,9 @@ public class Circle {
 	float y;
 	float radius;
 
-	Circle(float x, float y, float radius) {
+	Circle() {}
+
+	public Circle(float x, float y, float radius) {
 
 		this.set(x, y, radius);
 	}
@@ -18,7 +20,7 @@ public class Circle {
 		this.radius = radius;
 	}
 
-	boolean intersectCircle(Circle circle) {
+	public boolean intersectCircle(Circle circle) {
 
 		double distance = Math.sqrt(Math.pow(x - circle.x, 2) + Math.pow(y - circle.y, 2));
 		return distance < radius + circle.radius;

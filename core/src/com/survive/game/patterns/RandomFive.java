@@ -2,7 +2,6 @@ package com.survive.game.patterns;
 
 import com.survive.game.Enemy;
 import com.survive.game.EnemyPattern;
-import com.survive.game.EnemyPatternController;
 
 import static com.survive.game.EnemyPatternController.addRandomPattern;
 import static com.survive.game.EnemyPatternController.getSprite;
@@ -25,7 +24,7 @@ public class RandomFive extends EnemyPattern {
 		Enemy enemy = new Enemy(getSprite());
 		enemy.x = SPAWN_PADDING + (float) Math.random() * (MAP_WIDTH - SPAWN_PADDING * 2);
 		enemy.y = SPAWN_PADDING + (float) Math.random() * (MAP_HEIGHT - SPAWN_PADDING * 2);
-		array.add(enemy);
+		getArray().add(enemy);
 	}
 
 	@Override
