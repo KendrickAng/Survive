@@ -25,13 +25,12 @@ public class Player {
 	private double rotation;
 	private float offset_x = 0;
 	private float offset_y = 0;
-	int score;
-	int kills;
-	float time_alive;
+	private int score;
+	private int kills;
+	private float time_alive;
 	private Sprite sprite;
-
-	boolean dead;
-	Line hit_box;
+	private boolean dead;
+	private Line hit_box;
 
 	Player(Sprite sprite) {
 
@@ -121,6 +120,11 @@ public class Player {
 	}
 
 	public void addKills() { kills ++; }
+	public int getScore() { return score; }
+	public int getKills() { return kills; }
+	public float getTimeAlive() { return time_alive; }
 	public float getX() { return x; }
 	public float getY() { return y; }
+	public void setDead() { dead = true; }
+	public Line getHitBox() { return hit_box; }
 }

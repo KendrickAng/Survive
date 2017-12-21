@@ -6,27 +6,19 @@ import static com.survive.game.EnemyPatternController.getEnemyPatterns;
 import static com.survive.game.GameScreen.getPlayer;
 import static com.survive.game.Survive.getSpriteBatch;
 
-public class Explosion extends PowerUpType {
+public class Explosion extends PowerUp {
 
-	private static final float RADIUS = 49.5f;
+	private static final float RADIUS = 99.5f;
 
-	public Explosion() {
-
-		super();
-
-		this.COUNT = 3;
-		this.MIN_INTERVAL = 3;
-		this.MAX_INTERVAL = 10;
-		this.addAnimation("power_up_0_animation.atlas");
-	}
+	public Explosion(PowerUpType type) { super(type); }
 
 	@Override
-	protected void updateAnimation(PowerUp power_up) {
+	protected void updateAnimation() {
 
-		float x = power_up.getX();
-		float y = power_up.getY();
+		float x = getX();
+		float y = getY();
 
-		power_up.addTimer();
+		addTimer();
 
 		for (EnemyPattern pattern:getEnemyPatterns())
 			for (Enemy enemy : pattern.getArray())
@@ -36,16 +28,16 @@ public class Explosion extends PowerUpType {
 					getPlayer().addKills();
 				}
 
-		if (power_up.getTimer() > power_up.getAnimation().getAnimationDuration())
-			dispose(power_up);
+		if (getTimer() > getAnimation().getAnimationDuration())
+			dispose();
 	}
 
 	@Override
-	protected void renderAnimation(PowerUp power_up) {
+	protected void renderAnimation() {
 
-		float x = power_up.getX();
-		float y = power_up.getY();
+		float x = getX();
+		float y = getY();
 
-		getSpriteBatch().draw(power_up.getAnimation().getKeyFrame(power_up.getTimer(), false), x - RADIUS, y - RADIUS);
+		getSpriteBatch().draw(getAnimation().getKeyFrame(getTimer(), false), x - RADIUS, y - RADIUS);
 	}
 }

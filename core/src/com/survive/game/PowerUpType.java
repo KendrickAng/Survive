@@ -7,14 +7,19 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.survive.game.powerups.Explosion;
+import com.survive.game.powerups.Shield;
 
+import static com.survive.game.PowerUpTypeController.EXPLOSION_POWER_UP;
+import static com.survive.game.PowerUpTypeController.SHIELD_POWER_UP;
 import static com.survive.game.Screen.getDelta;
 
-public abstract class PowerUpType {
+public class PowerUpType {
 
 	protected float MIN_INTERVAL;
 	protected float MAX_INTERVAL;
 	protected int COUNT;
+	protected int TYPE;
 
     private float timer;
 	private float spawn_interval;
@@ -23,7 +28,7 @@ public abstract class PowerUpType {
 	private Array<PowerUp> power_up_array;
 	private Array<Animation<TextureRegion>> animation_array;
 
-	protected PowerUpType() {
+	public PowerUpType() {
 
 		power_up_array = new Array<PowerUp>();
 		animation_array = new Array<Animation<TextureRegion>>();
@@ -37,13 +42,22 @@ public abstract class PowerUpType {
 
     		if (timer > spawn_interval) {
 
-    			PowerUp power_up = new PowerUp();
-    			power_up.setIcon(icon);
+    			PowerUp power_up = null;
 
-				for (Animation<TextureRegion> animation:animation_array)
-					power_up.addAnimation(animation);
+				switch (TYPE) {
 
-				power_up_array.add(power_up);
+					case EXPLOSION_POWER_UP:
+						power_up = new Explosion(this);
+						break;
+
+					case SHIELD_POWER_UP:
+						power_up = new Shield(this);
+						break;
+				}
+
+				if (power_up != null)
+					power_up_array.add(power_up);
+
 				spawn_interval = (float) Math.random() * (MAX_INTERVAL - MIN_INTERVAL) + MIN_INTERVAL;
 				timer = 0;
 			}
@@ -57,7 +71,7 @@ public abstract class PowerUpType {
 				power_up.updateIcon();
 
 			if (index >= 0)
-				updateAnimation(power_up);
+				power_up.updateAnimation();
 		}
     }
 
@@ -71,19 +85,19 @@ public abstract class PowerUpType {
 				power_up.renderIcon();
 
 			if (index >= 0)
-				renderAnimation(power_up);
+				power_up.renderAnimation();
 		}
     }
 
-    protected abstract void updateAnimation(PowerUp power_up);
-	protected abstract void renderAnimation(PowerUp power_up);
-
+    protected void setDelay(float delay) { this.timer = -delay; }
 	protected void setIcon(String string) { this.icon = new Sprite(new Texture(string)); }
+	protected Sprite getIcon() { return icon; }
 	protected void addAnimation(String string) {
 
 		TextureAtlas texture_atlas = new TextureAtlas(Gdx.files.internal(string));
 		Animation<TextureRegion> animation = new Animation<TextureRegion>(0.033f, texture_atlas.getRegions());
 		animation_array.add(animation);
 	}
+	protected Array<Animation<TextureRegion>> getAnimation() { return animation_array; }
 	protected void dispose(PowerUp power_up) { power_up_array.removeValue(power_up, true); }
 }

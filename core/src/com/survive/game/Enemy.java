@@ -83,8 +83,8 @@ public class Enemy {
 
 	void playerHitTest() {
 
-		if (spawned && getPlayer().hit_box.intersectCircle(hit_box))
-			getPlayer().dead = true;
+		if (spawned && getPlayer().getHitBox().intersectCircle(hit_box))
+			getPlayer().setDead();
 	}
 
 	void render() {

@@ -1,6 +1,5 @@
 package com.survive.game;
 
-
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,7 +11,7 @@ import static com.survive.game.GameScreen.getPlayer;
 import static com.survive.game.Screen.getDelta;
 import static com.survive.game.Survive.getSpriteBatch;
 
-public class PowerUp {
+public abstract class PowerUp {
 
 	private static final float SPEED = 10;
     private static final float ROTATION_SPEED = 1;
@@ -26,15 +25,19 @@ public class PowerUp {
     private double x_speed;
     private double y_speed;
 	private Circle hit_box;
-	private Sprite sprite;
+	private Sprite icon;
+	private  PowerUpType type;
 
 	private int animation_index = -1;
 	private float animation_time;
 	private Array<Animation<TextureRegion>> animation_array;
 
-	PowerUp() {
+	protected PowerUp(PowerUpType type) {
 
-		animation_array = new Array<Animation<TextureRegion>>();
+		this.type = type;
+		icon = type.getIcon();
+		radius = icon.getWidth()/2;
+		animation_array = type.getAnimation();
 		hit_box = new Circle();
 
 		// Spawn within map boundaries
@@ -65,32 +68,30 @@ public class PowerUp {
 
 		hit_box.set(x, y, radius);
 
-		if (getPlayer().hit_box.intersectCircle(hit_box))
+		if (getPlayer().getHitBox().intersectCircle(hit_box))
 			nextAnimation();
 	}
 
     void renderIcon() {
 
-		sprite.setRotation((float) Math.toDegrees(rotation));
-		sprite.setPosition(x - radius, y - radius);
-		sprite.draw(getSpriteBatch());
+		icon.setRotation((float) Math.toDegrees(rotation));
+		icon.setPosition(x - radius, y - radius);
+		icon.draw(getSpriteBatch());
     }
 
-    void setIcon(Sprite sprite) {
+	protected void dispose() { this.type.dispose(this); }
 
-		this.sprite = sprite;
-		this.radius = sprite.getWidth()/2;
-	}
+	protected abstract void updateAnimation();
+	protected abstract void renderAnimation();
 
-	void addAnimation(Animation<TextureRegion> animation) { animation_array.add(animation); }
-	public int getIndex() { return animation_index; }
-	public Animation<TextureRegion> getAnimation() { return animation_array.get(animation_index); }
-    public void nextAnimation() { animation_index ++; }
-    public float getTimer() { return animation_time; }
-	public void addTimer() { animation_time += getDelta(); }
-	public void resetTimer() { animation_time = 0; }
-    public float getX() { return x; }
-    public float getY() { return y; }
-	public void setX(float x) { this.x = x; }
-	public void setY(float y) { this.y = y; }
+	protected int getIndex() { return animation_index; }
+	protected Animation<TextureRegion> getAnimation() { return animation_array.get(animation_index); }
+    protected void nextAnimation() { animation_index ++; }
+    protected float getTimer() { return animation_time; }
+	protected void addTimer() { animation_time += getDelta(); }
+	protected void resetTimer() { animation_time = 0; }
+    protected float getX() { return x; }
+    protected float getY() { return y; }
+	protected void setX(float x) { this.x = x; }
+	protected void setY(float y) { this.y = y; }
 }

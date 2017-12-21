@@ -23,11 +23,11 @@ public class GameOverScreen extends Screen {
 
 		Player player = GameScreen.getPlayer();
 
-		Text kills = new Text(GAME_FONT.get(0), "KILLS: " + String.valueOf(player.kills));
+		Text kills = new Text(GAME_FONT.get(0), "KILLS: " + String.valueOf(player.getKills()));
 		kills.setPadding(5);
-		Text time_alive = new Text(GAME_FONT.get(0), "TIME: " + String.valueOf((int) player.time_alive));
+		Text time_alive = new Text(GAME_FONT.get(0), "TIME: " + String.valueOf((int) player.getTimeAlive()));
 		time_alive.setPadding(5);
-		Text score = new Text(GAME_FONT.get(0), "SCORE: " + String.valueOf(player.score));
+		Text score = new Text(GAME_FONT.get(0), "SCORE: " + String.valueOf(player.getScore()));
 		score.setPadding(5);
 
 		information = new TextList(kills, time_alive, score);

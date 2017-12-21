@@ -70,11 +70,11 @@ public class GameScreen extends Screen {
 
 		// Update game instance
 		getPlatform().updateCursor();
-		power_up_controller.update();
 		player.update();
+		power_up_controller.update();
 		enemy_controller.update();
 
-		score.setText("SCORE: " + String.valueOf(player.score), true);
+		score.setText("SCORE: " + String.valueOf(player.getScore()), true);
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), true);
 	}
 
