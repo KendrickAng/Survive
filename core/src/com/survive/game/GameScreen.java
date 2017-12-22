@@ -12,10 +12,10 @@ public class GameScreen extends Screen {
 
 	// Define HUD constants
 	private static final int GAME_DOCK_PADDING = 10;
-	private static final int DOCK_HEIGHT = 14 + GAME_DOCK_PADDING * 2;
+	private static final int GAME_DOCK_HEIGHT = 14 + GAME_DOCK_PADDING * 2;
 
 	// Define game boundary constants
-	public static final int MAP_HEIGHT = GAME_HEIGHT - DOCK_HEIGHT;
+	public static final int MAP_HEIGHT = GAME_HEIGHT - GAME_DOCK_HEIGHT;
 	public static final int MAP_WIDTH = GAME_WIDTH;
 
 	private static Player player;
@@ -83,14 +83,18 @@ public class GameScreen extends Screen {
 
 		getSpriteBatch().disableBlending();
 		getSpriteBatch().draw(GAME_COLOR.get(0), 0, 0, MAP_WIDTH, MAP_HEIGHT);
-		getSpriteBatch().draw(GAME_COLOR.get(1), 0, MAP_HEIGHT, MAP_WIDTH, DOCK_HEIGHT);
 		getSpriteBatch().enableBlending();
 
 		power_up_controller.render();
 		player.render();
 		enemy_controller.render();
+
+		getSpriteBatch().disableBlending();
+		getSpriteBatch().draw(GAME_COLOR.get(1), 0, MAP_HEIGHT, MAP_WIDTH, GAME_DOCK_HEIGHT);
 		score.render();
 		fps.render();
+		getSpriteBatch().enableBlending();
+
 		getPlatform().renderCursor();
 	}
 

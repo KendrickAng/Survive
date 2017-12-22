@@ -3,6 +3,7 @@ package com.survive.game;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import static com.survive.game.GameScreen.MAP_HEIGHT;
@@ -13,8 +14,10 @@ import static com.survive.game.Survive.getSpriteBatch;
 
 public abstract class PowerUp {
 
-	private static final float SPEED = 10;
-    private static final float ROTATION_SPEED = 1;
+	private static final float MIN_SPEED = 10;
+	private static final float MAX_SPEED = 20;
+    private static final float MIN_ROTATION_SPEED = 1;
+	private static final float MAX_ROTATION_SPEED = 2;
     private static final float SPAWN_PADDING = 50;
 
     private float x;
@@ -46,9 +49,9 @@ public abstract class PowerUp {
 
         // Init Speed & Rotation
         double theta = Math.random() * 2 * Math.PI;
-        double speed = Math.random() * SPEED;
+        double speed = MathUtils.random(MIN_SPEED, MAX_SPEED);
         rotation = theta;
-        rotation_speed = Math.random() * ROTATION_SPEED;
+        rotation_speed = MathUtils.randomSign() * MathUtils.random(MIN_ROTATION_SPEED, MAX_ROTATION_SPEED);
         x_speed = Math.sin(theta) * speed;
         y_speed = Math.cos(theta) * speed;
     }
