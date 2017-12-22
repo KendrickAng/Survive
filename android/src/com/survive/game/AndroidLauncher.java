@@ -12,8 +12,11 @@ public class AndroidLauncher extends AndroidApplication {
 
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useWakelock = true;
 		config.useImmersiveMode = true;
 		config.useGyroscope = true;
+		config.useAccelerometer = false;
+		config.useCompass = false;
 
 		initialize(new Survive(new AndroidPlatform()), config);
 	}

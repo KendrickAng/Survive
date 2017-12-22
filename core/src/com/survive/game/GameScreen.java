@@ -91,9 +91,10 @@ public class GameScreen extends Screen {
 
 		getSpriteBatch().disableBlending();
 		getSpriteBatch().draw(GAME_COLOR.get(1), 0, MAP_HEIGHT, MAP_WIDTH, GAME_DOCK_HEIGHT);
+		getSpriteBatch().enableBlending();
+
 		score.render();
 		fps.render();
-		getSpriteBatch().enableBlending();
 
 		getPlatform().renderCursor();
 	}
